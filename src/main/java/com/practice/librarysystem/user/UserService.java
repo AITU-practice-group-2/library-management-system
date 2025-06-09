@@ -1,6 +1,8 @@
 package com.practice.librarysystem.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<User> findAll(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return userRepository.findAll(pageable).getContent();
     }
 
     public User findById(int id) {

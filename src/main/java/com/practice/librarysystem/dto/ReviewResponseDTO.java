@@ -1,6 +1,9 @@
 package com.practice.librarysystem.dto;
 import java.time.LocalDateTime;
 
+import lombok.Data;
+
+@Data
 public class ReviewResponseDTO {
     private Long id;
     private String comment;

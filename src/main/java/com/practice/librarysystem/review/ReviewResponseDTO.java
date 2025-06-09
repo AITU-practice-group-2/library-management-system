@@ -1,4 +1,4 @@
-package com.practice.librarysystem.dto;
+package com.practice.librarysystem.review;
 import java.time.LocalDateTime;
 
 import lombok.Data;

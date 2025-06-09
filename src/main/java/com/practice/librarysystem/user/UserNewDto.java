@@ -1,4 +1,4 @@
-package com.practice.librarysystem.dto;
+package com.practice.librarysystem.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

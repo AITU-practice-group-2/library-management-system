@@ -1,4 +1,4 @@
-package com.practice.librarysystem.dto;
+package com.practice.librarysystem.review;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

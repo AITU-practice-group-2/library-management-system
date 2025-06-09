@@ -1,6 +1,5 @@
-package com.practice.librarysystem.repository;
+package com.practice.librarysystem.review;
 
-import com.practice.librarysystem.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {

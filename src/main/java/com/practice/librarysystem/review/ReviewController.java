@@ -1,9 +1,5 @@
-package com.practice.librarysystem.controller;
+package com.practice.librarysystem.review;
 
-import com.practice.librarysystem.dto.ReviewResponseDTO;
-import com.practice.librarysystem.entity.Review;
-import com.practice.librarysystem.mapper.ReviewMapper;
-import com.practice.librarysystem.service.ReviewService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

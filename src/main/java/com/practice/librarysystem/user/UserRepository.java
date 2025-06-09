@@ -1,8 +1,6 @@
-package com.practice.librarysystem.repository;
+package com.practice.librarysystem.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.practice.librarysystem.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 }

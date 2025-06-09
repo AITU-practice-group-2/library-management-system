@@ -1,7 +1,5 @@
-package com.practice.librarysystem.service;
+package com.practice.librarysystem.review;
 
-import com.practice.librarysystem.entity.Review;
-import com.practice.librarysystem.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,7 +1,5 @@
-package com.practice.librarysystem.mapper;
+package com.practice.librarysystem.review;
 
-import com.practice.librarysystem.dto.ReviewResponseDTO;
-import com.practice.librarysystem.entity.Review;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

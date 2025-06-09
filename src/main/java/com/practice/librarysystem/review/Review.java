@@ -1,7 +1,10 @@
-package com.practice.librarysystem.entity;
+package com.practice.librarysystem.review;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import com.practice.librarysystem.user.User;
+import com.practice.librarysystem.book.Book;
 import lombok.Getter;
 import lombok.Setter;
 

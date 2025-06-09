@@ -1,9 +1,6 @@
-package com.practice.librarysystem.mapper;
+package com.practice.librarysystem.user;
 
 import org.mapstruct.Mapper;
-
-import com.practice.librarysystem.dto.UserDto;
-import com.practice.librarysystem.entity.User;
 
 import java.util.List;
 

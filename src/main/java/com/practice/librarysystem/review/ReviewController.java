@@ -1,6 +1,9 @@
 package com.practice.librarysystem.review;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,18 +28,26 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    public Review getOne(@PathVariable Long id) {
-        return reviewService.getReview(id);
+    public ResponseEntity<ReviewResponseDTO> getOne(@PathVariable Long id) {
+        Review review = reviewService.getReview(id);
+        return ResponseEntity.ok(reviewMapper.toDTO(review));
     }
 
-    @PostMapping
-    public Review create(@RequestBody Review review) {
-        return reviewService.createReview(review);
+
+   @PostMapping
+    public ResponseEntity<ReviewResponseDTO> createReview(@RequestBody @Valid ReviewRequestDTO dto) {
+        Review review = reviewService.createReview(dto);
+        ReviewResponseDTO response = reviewMapper.toDTO(review);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public Review update(@PathVariable Long id, @RequestBody Review review) {
-        return reviewService.updateReview(id, review);
+    public ResponseEntity<ReviewResponseDTO> update(
+            @PathVariable Long id,
+            @RequestBody @Valid ReviewRequestDTO dto) {
+
+        Review updatedReview = reviewService.updateReview(id, dto);
+        return ResponseEntity.ok(reviewMapper.toDTO(updatedReview));
     }
 
     @DeleteMapping("/{id}")

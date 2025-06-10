@@ -22,7 +22,7 @@ public class BookService {
         return bookRepository.findAll(pageable);
     }
 
-    public Book findById(int id) {
+    public Book findById(long id) {
         return bookRepository.findById(id)
                 .orElseThrow();
     }

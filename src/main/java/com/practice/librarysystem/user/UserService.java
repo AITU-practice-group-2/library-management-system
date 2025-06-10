@@ -23,11 +23,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(int id) {
+    public User findById(long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
     }
 
-    public User update(int id, UserNewDto newUser) {
+    public User update(long id, UserNewDto newUser) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
         if (newUser.getEmail() != null) {
             user.setEmail(user.getEmail());
@@ -42,7 +42,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void delete(int id) {
+    public void delete(long id) {
         userRepository.deleteById(id);
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
+
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -26,5 +27,26 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<CategoryDTO> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
+
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable long id) {
+        CategoryDTO category = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(category);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable long id, @Valid @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO updateCategory = categoryService.updateCategory(id, categoryDTO);
+        return ResponseEntity.ok(updateCategory);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCategory(@PathVariable long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok("Category with id " + id + " has been deleted successfully.");
+    }
+
 }

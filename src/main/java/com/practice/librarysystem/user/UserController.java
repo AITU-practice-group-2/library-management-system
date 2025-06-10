@@ -1,5 +1,6 @@
 package com.practice.librarysystem.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public UserDto create(@RequestBody UserNewDto userNewDto) {
+    public UserDto create(@RequestBody @Valid UserNewDto userNewDto) {
         return userMapper.toDto(userService.create(userNewDto));
     }
 
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable int id, @RequestBody UserNewDto newUser) {
+    public UserDto update(@PathVariable int id, @RequestBody @Valid UserNewDto newUser) {
         return userMapper.toDto(userService.update(id, newUser));
     }
 

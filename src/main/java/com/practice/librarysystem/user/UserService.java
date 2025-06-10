@@ -17,6 +17,11 @@ public class UserService {
         user.setEmail(newUser.getEmail());
         user.setLogin(newUser.getLogin());
         user.setPassword(newUser.getPassword());
+        if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
+            user.setRole(Role.ADMIN);
+        } else {
+            user.setRole(Role.GUEST);
+        }
 
         return userRepository.save(user);
     }
@@ -40,6 +45,13 @@ public class UserService {
         }
         if (newUser.getPassword() != null) {
             user.setPassword(user.getPassword());
+        }
+        if (newUser.getRole() != null) {
+            if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
+                user.setRole(Role.ADMIN);
+            } else {
+                user.setRole(Role.GUEST);
+            }
         }
 
         return userRepository.save(user);

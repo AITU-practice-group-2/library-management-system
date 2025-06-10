@@ -22,4 +22,5 @@ public class UserNewDto {
     @NotBlank(message = "Email cannot be empty.")
     @Email(message = "Not correct format.")
     String email;
+    String role;
 }

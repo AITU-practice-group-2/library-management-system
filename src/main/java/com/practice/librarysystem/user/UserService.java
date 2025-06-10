@@ -22,8 +22,8 @@ public class UserService {
         } else {
             user.setRole(Role.GUEST);
         }
-
-        return userRepository.save(user);
+        userRepository.save(user);
+        return user;
     }
 
     public List<User> findAll(int from, int size) {

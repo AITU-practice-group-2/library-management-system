@@ -1,6 +1,4 @@
-package com.practice.librarysystem.service;
-
-import com.practice.librarysystem.dto.CategoryDTO;
+package com.practice.librarysystem.category;
 
 import java.util.List;
 

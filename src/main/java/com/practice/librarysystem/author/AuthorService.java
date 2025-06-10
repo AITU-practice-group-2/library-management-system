@@ -1,6 +1,4 @@
-package com.practice.librarysystem.author.service;
-
-import com.practice.librarysystem.author.dto.AuthorDTO;
+package com.practice.librarysystem.author;
 
 import java.util.List;
 

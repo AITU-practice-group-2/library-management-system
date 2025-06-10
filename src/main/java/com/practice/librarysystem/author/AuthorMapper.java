@@ -1,7 +1,4 @@
-package com.practice.librarysystem.author.mapper;
-
-import com.practice.librarysystem.author.dto.AuthorDTO;
-import com.practice.librarysystem.author.entity.Author;
+package com.practice.librarysystem.author;
 
 public class AuthorMapper {
 

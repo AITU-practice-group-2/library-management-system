@@ -1,11 +1,11 @@
-package com.practice.librarysystem.service.impl;
+package com.practice.librarysystem.category.impl;
 import com.practice.librarysystem.exception.AlreadyExistsException;
 
-import com.practice.librarysystem.dto.CategoryDTO;
-import com.practice.librarysystem.entity.Category;
-import com.practice.librarysystem.mapper.CategoryMapper;
-import com.practice.librarysystem.repository.CategoryRepository;
-import com.practice.librarysystem.service.CategoryService;
+import com.practice.librarysystem.category.CategoryDTO;
+import com.practice.librarysystem.category.Category;
+import com.practice.librarysystem.category.CategoryMapper;
+import com.practice.librarysystem.category.CategoryRepository;
+import com.practice.librarysystem.category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

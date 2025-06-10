@@ -1,4 +1,4 @@
-package com.practice.librarysystem.dto;
+package com.practice.librarysystem.category;
 
 import lombok.*;
 

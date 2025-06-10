@@ -1,4 +1,4 @@
-package com.practice.librarysystem.author.dto;
+package com.practice.librarysystem.author;
 
 import lombok.*;
 

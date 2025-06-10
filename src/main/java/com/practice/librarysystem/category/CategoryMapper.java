@@ -1,7 +1,4 @@
-package com.practice.librarysystem.mapper;
-
-import com.practice.librarysystem.dto.CategoryDTO;
-import com.practice.librarysystem.entity.Category;
+package com.practice.librarysystem.category;
 
 public class CategoryMapper {
 

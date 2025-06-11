@@ -1,4 +1,4 @@
-package com.practice.librarysystem.book;
+package com.practice.librarysystem.book.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -8,7 +8,9 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookDto {
+public class BookResponse {
+    Long id;
+
     @Size(max = 100)
     String title;
 
@@ -24,7 +26,7 @@ public class BookDto {
     @NotNull
     Integer available;
 
-    Integer author;
+    String author;
 
-    Integer category;
+    String category;
 }

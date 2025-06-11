@@ -3,8 +3,7 @@ package com.practice.librarysystem.book;
 import com.practice.librarysystem.author.Author;
 import com.practice.librarysystem.category.Category;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
@@ -15,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     String title;
 

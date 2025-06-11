@@ -1,5 +1,5 @@
 package com.practice.librarysystem.category.impl;
-import com.practice.librarysystem.exception.AlreadyExistsException;
+import com.practice.librarysystem.exception.DataConflictException;
 
 import com.practice.librarysystem.category.CategoryDTO;
 import com.practice.librarysystem.category.Category;
@@ -25,14 +25,14 @@ public class CategoryServiceImpl implements CategoryService {
 
         // Check if category with the same name already exists in the database
         if(categoryRepository.findByName(category.getName()).isPresent()) {
-            throw new AlreadyExistsException("Category with this name already exists");
+            throw new DataConflictException("Category with this name already exists");
         }
 
         // Save the new category to the database
-        Category saved = categoryRepository.save(category);
+        categoryRepository.save(category);
 
         // Convert saved entity back to DTO and return
-        return CategoryMapper.toDTO(saved);
+        return CategoryMapper.toDTO(category);
     }
 
     @Override

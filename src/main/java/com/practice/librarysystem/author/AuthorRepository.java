@@ -1,6 +1,5 @@
-package com.practice.librarysystem.author.repository;
+package com.practice.librarysystem.author;
 
-import com.practice.librarysystem.author.entity.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AuthorRepository extends JpaRepository<Author, Long> {

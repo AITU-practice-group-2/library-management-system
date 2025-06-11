@@ -1,7 +1,5 @@
-package com.practice.librarysystem.controller;
+package com.practice.librarysystem.category;
 
-import com.practice.librarysystem.dto.CategoryDTO;
-import com.practice.librarysystem.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

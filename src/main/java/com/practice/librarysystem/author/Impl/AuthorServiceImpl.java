@@ -1,10 +1,10 @@
-package com.practice.librarysystem.author.service.Impl;
+package com.practice.librarysystem.author.Impl;
 
-import com.practice.librarysystem.author.dto.AuthorDTO;
-import com.practice.librarysystem.author.entity.Author;
-import com.practice.librarysystem.author.mapper.AuthorMapper;
-import com.practice.librarysystem.author.repository.AuthorRepository;
-import com.practice.librarysystem.author.service.AuthorService;
+import com.practice.librarysystem.author.AuthorDTO;
+import com.practice.librarysystem.author.Author;
+import com.practice.librarysystem.author.AuthorMapper;
+import com.practice.librarysystem.author.AuthorRepository;
+import com.practice.librarysystem.author.AuthorService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

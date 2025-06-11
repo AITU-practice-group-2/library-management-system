@@ -1,6 +1,5 @@
-package com.practice.librarysystem.repository;
+package com.practice.librarysystem.category;
 
-import com.practice.librarysystem.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,8 +1,9 @@
 package com.practice.librarysystem.book;
 
+import com.practice.librarysystem.author.Author;
+import com.practice.librarysystem.category.Category;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
@@ -13,23 +14,22 @@ import lombok.experimental.FieldDefaults;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Long id;
 
     String title;
 
     String description;
 
     @Column(name = "publication_year")
-    int publicationYear;
+    Integer publicationYear;
 
-    int pages;
+    Integer pages;
 
-    int available;
+    Integer available;
 
-    //TODO: replace int's with entity objects
-    @Column(name = "author_id")
-    int authorId;
+    @ManyToOne
+    Author author;
 
-    @Column(name = "category_id")
-    int categoryId;
+    @ManyToOne
+    Category category;
 }

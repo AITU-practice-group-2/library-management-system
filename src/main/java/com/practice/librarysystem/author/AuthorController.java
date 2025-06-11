@@ -1,7 +1,5 @@
-package com.practice.librarysystem.author.controller;
+package com.practice.librarysystem.author;
 
-import com.practice.librarysystem.author.dto.AuthorDTO;
-import com.practice.librarysystem.author.service.AuthorService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

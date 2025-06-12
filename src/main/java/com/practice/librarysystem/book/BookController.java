@@ -33,7 +33,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public BookResponse findById(@PathVariable int id) {
+    public BookResponse findById(@PathVariable Long id) {
         return bookMapper.toDto(
                 bookService.findById(id));
     }
@@ -51,7 +51,7 @@ public class BookController {
     }
 
     @PatchMapping("/{id}")
-    public BookResponse updateById(@PathVariable int id,
+    public BookResponse updateById(@PathVariable Long id,
                                    @RequestBody @Valid UpdateBookRequest bookDto) {
         Long authorId = bookDto.getAuthor();
         Long categoryId = bookDto.getCategory();
@@ -64,7 +64,7 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable int id) {
+    public void deleteById(@PathVariable Long id) {
         bookService.deleteById(id);
     }
 }

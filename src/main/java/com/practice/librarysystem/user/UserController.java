@@ -2,6 +2,7 @@ package com.practice.librarysystem.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody @Valid UserNewDto userNewDto) {
         return userMapper.toDto(userService.create(userNewDto));
     }
@@ -25,17 +27,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto findById(@PathVariable int id) {
+    public UserDto findById(@PathVariable Long id) {
         return userMapper.toDto(userService.findById(id));
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable int id, @RequestBody @Valid UserNewDto newUser) {
+    public UserDto update(@PathVariable Long id, @RequestBody @Valid UserNewDto newUser) {
         return userMapper.toDto(userService.update(id, newUser));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
         userService.delete(id);
     }
 }

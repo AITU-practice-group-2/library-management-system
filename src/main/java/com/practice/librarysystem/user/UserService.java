@@ -1,5 +1,6 @@
 package com.practice.librarysystem.user;
 
+import com.practice.librarysystem.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,12 +32,12 @@ public class UserService {
         return userRepository.findAll(pageable).getContent();
     }
 
-    public User findById(int id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found."));
     }
 
-    public User update(int id, UserNewDto newUser) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+    public User update(Long id, UserNewDto newUser) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found."));
         if (newUser.getEmail() != null) {
             user.setEmail(user.getEmail());
         }
@@ -57,7 +58,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         userRepository.deleteById(id);
     }
 }

@@ -1,6 +1,8 @@
 package com.practice.librarysystem.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,12 +17,18 @@ public class UserService {
         user.setEmail(newUser.getEmail());
         user.setLogin(newUser.getLogin());
         user.setPassword(newUser.getPassword());
-
-        return userRepository.save(user);
+        if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
+            user.setRole(Role.ADMIN);
+        } else {
+            user.setRole(Role.GUEST);
+        }
+        userRepository.save(user);
+        return user;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<User> findAll(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return userRepository.findAll(pageable).getContent();
     }
 
     public User findById(long id) {
@@ -37,6 +45,13 @@ public class UserService {
         }
         if (newUser.getPassword() != null) {
             user.setPassword(user.getPassword());
+        }
+        if (newUser.getRole() != null) {
+            if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
+                user.setRole(Role.ADMIN);
+            } else {
+                user.setRole(Role.GUEST);
+            }
         }
 
         return userRepository.save(user);

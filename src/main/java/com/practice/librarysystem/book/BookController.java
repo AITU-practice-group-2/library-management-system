@@ -1,5 +1,10 @@
 package com.practice.librarysystem.book;
 
+import com.practice.librarysystem.book.dto.BookResponse;
+import com.practice.librarysystem.book.dto.NewBookRequest;
+import com.practice.librarysystem.book.dto.UpdateBookRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,29 +23,48 @@ public class BookController {
     BookMapper bookMapper;
 
     @GetMapping
-    public List<BookDto> findAll(@RequestParam(defaultValue = "0") int from,
-                              @RequestParam(defaultValue = "10") int size) {
+    public List<BookResponse> findAllByMultipleParams(@RequestParam(required = false) String search,
+                                                      @RequestParam(required = false) @Min(1) Long author,
+                                                      @RequestParam(required = false) @Min(1) Long category,
+                                                      @RequestParam(defaultValue = "0") int from,
+                                                      @RequestParam(defaultValue = "10") int size) {
         return bookMapper.toDto(
-                bookService.findAll(from, size));
+                bookService.findAllByMultipleParams(search, author, category, from, size));
     }
 
     @GetMapping("/{id}")
-    public BookDto findById(@PathVariable int id) {
+    public BookResponse findById(@PathVariable int id) {
         return bookMapper.toDto(
                 bookService.findById(id));
     }
 
-    //TODO: create, update
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book createNew(@RequestBody Book book,
-                          @RequestHeader int userId) {
-        return null;
+    public BookResponse createNew(@RequestBody @Valid NewBookRequest bookDto) {
+        Long authorId = bookDto.getAuthor();
+        Long categoryId = bookDto.getCategory();
+
+        Book book = bookMapper.fromDto(bookDto);
+
+        return bookMapper.toDto(
+                bookService.createNew(book, authorId, categoryId));
     }
 
     @PatchMapping("/{id}")
-    public Book updateById(@RequestBody Book book,
-                           @PathVariable int id) {
-        return null;
+    public BookResponse updateById(@PathVariable int id,
+                                   @RequestBody @Valid UpdateBookRequest bookDto) {
+        Long authorId = bookDto.getAuthor();
+        Long categoryId = bookDto.getCategory();
+
+        Book book = bookMapper.fromDto(bookDto);
+
+        return bookMapper.toDto(
+                bookService.updateById(id, book, authorId, categoryId));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable int id) {
+        bookService.deleteById(id);
     }
 }

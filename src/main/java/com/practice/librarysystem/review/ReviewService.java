@@ -6,6 +6,9 @@ import com.practice.librarysystem.exception.NotFoundException;
 import com.practice.librarysystem.user.User;
 import com.practice.librarysystem.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,8 +24,12 @@ public class ReviewService {
     private final BookRepository bookRepository;
 
 
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
+    public Page<Review> getAllReviews(int from, int size) {
+        int pageNumber = from / size;
+
+        Pageable pageable = PageRequest.of(pageNumber, size);
+
+        return reviewRepository.findAll(pageable);
     }
 
     public Review getReview(Long id) {

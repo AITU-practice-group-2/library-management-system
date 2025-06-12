@@ -1,5 +1,6 @@
 package com.practice.librarysystem.review;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,9 @@ public class ReviewController {
     }
 
     @GetMapping
-    public List<ReviewResponseDTO> getAll() {
-        return reviewService.getAllReviews().stream()
+    public List<ReviewResponseDTO> getAll(@RequestParam(defaultValue = "0") int from,
+                                          @RequestParam(defaultValue = "10") int size) {
+        return reviewService.getAllReviews(from, size).stream()
                 .map(reviewMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -35,6 +37,7 @@ public class ReviewController {
 
 
    @PostMapping
+   @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ReviewResponseDTO> createReview(@RequestBody @Valid ReviewRequestDTO dto) {
         Review review = reviewService.createReview(dto);
         ReviewResponseDTO response = reviewMapper.toDTO(review);
@@ -51,6 +54,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         reviewService.deleteReview(id);
     }

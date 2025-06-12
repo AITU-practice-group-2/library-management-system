@@ -2,7 +2,7 @@ package com.practice.librarysystem.category;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,35 +16,32 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
-        CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
-        return ResponseEntity.ok(createdCategory);
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoryDTO createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        return categoryService.createCategory(categoryDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<CategoryDTO> categories = categoryService.getAllCategories();
-        return ResponseEntity.ok(categories);
+    public List<CategoryDTO> getAllCategories() {
+        return categoryService.getAllCategories();
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable long id) {
-        CategoryDTO category = categoryService.getCategoryById(id);
-        return ResponseEntity.ok(category);
+    public CategoryDTO getCategoryById(@PathVariable long id) {
+        return categoryService.getCategoryById(id);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable long id, @Valid @RequestBody CategoryDTO categoryDTO) {
-        CategoryDTO updateCategory = categoryService.updateCategory(id, categoryDTO);
-        return ResponseEntity.ok(updateCategory);
+    public CategoryDTO updateCategory(@PathVariable long id, @Valid @RequestBody CategoryDTO categoryDTO) {
+        return categoryService.updateCategory(id, categoryDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok("Category with id " + id + " has been deleted successfully.");
     }
 
 }

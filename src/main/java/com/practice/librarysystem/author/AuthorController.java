@@ -1,5 +1,6 @@
 package com.practice.librarysystem.author;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class AuthorController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public AuthorDTO create(@RequestBody AuthorDTO dto) {
         return service.createAuthor(dto);
     }
@@ -25,8 +27,9 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<AuthorDTO> getAll() {
-        return service.getAllAuthors();
+    public List<AuthorDTO> getAll(@RequestParam(defaultValue = "0") int from,
+                                  @RequestParam(defaultValue = "10") int size) {
+        return service.getAllAuthors(from, size);
     }
 
     @PutMapping("/{id}")
@@ -35,6 +38,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         service.deleteAuthor(id);
     }

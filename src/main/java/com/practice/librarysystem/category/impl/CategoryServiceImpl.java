@@ -1,16 +1,20 @@
-package com.practice.librarysystem.category.impl;
-import com.practice.librarysystem.exception.DataConflictException;
+package com.practice.librarysystem.service.impl;
 
-import com.practice.librarysystem.category.CategoryDTO;
 import com.practice.librarysystem.category.Category;
+import com.practice.librarysystem.category.CategoryDTO;
+import com.practice.librarysystem.exception.AlreadyExistsException;
 import com.practice.librarysystem.category.CategoryMapper;
+
 import com.practice.librarysystem.category.CategoryRepository;
+
 import com.practice.librarysystem.category.CategoryService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,19 +24,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        // Convert DTO to Entity
         Category category = CategoryMapper.toEntity(categoryDTO);
 
-        // Check if category with the same name already exists in the database
-        if(categoryRepository.findByName(category.getName()).isPresent()) {
-            throw new DataConflictException("Category with this name already exists");
+        if (categoryRepository.findByName(category.getName()).isPresent()) {
+            throw new AlreadyExistsException("Category with this name already exists");
         }
 
-        // Save the new category to the database
-        categoryRepository.save(category);
-
-        // Convert saved entity back to DTO and return
-        return CategoryMapper.toDTO(category);
+        Category saved = categoryRepository.save(category);
+        return CategoryMapper.toDTO(saved);
     }
 
     @Override
@@ -41,5 +40,37 @@ public class CategoryServiceImpl implements CategoryService {
                 .stream()
                 .map(CategoryMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CategoryDTO getCategoryById(long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        return CategoryMapper.toDTO(category);
+    }
+
+    @Override
+    public CategoryDTO updateCategory(long id, CategoryDTO categoryDTO) {
+        Category existing = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        if (!existing.getName().equals(categoryDTO.getName()) &&
+                categoryRepository.findByName(categoryDTO.getName()).isPresent()) {
+            throw new AlreadyExistsException("Category with this name already exists");
+        }
+
+        existing.setName(categoryDTO.getName());
+        existing.setDescription(categoryDTO.getDescription());
+
+        Category saved = categoryRepository.save(existing);
+        return CategoryMapper.toDTO(saved);
+    }
+
+    @Override
+    public void deleteCategory(long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new RuntimeException("Category not found");
+        }
+        categoryRepository.deleteById(id);
     }
 }

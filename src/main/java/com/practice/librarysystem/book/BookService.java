@@ -80,7 +80,7 @@ public class BookService {
         return bookRepository.findAll(pageable);
     }
 
-    public Book findById(int id) {
+    public Book findById(Long id) {
         return findByIdOrElseThrow(id);
     }
 
@@ -98,7 +98,7 @@ public class BookService {
         return book;
     }
 
-    public Book updateById(int id, Book book, Long authorId, Long categoryId) {
+    public Book updateById(Long id, Book book, Long authorId, Long categoryId) {
         Book foundBook = findByIdOrElseThrow(id);
 
         if (book.getTitle() != null) {
@@ -137,24 +137,13 @@ public class BookService {
         return foundBook;
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         findByIdOrElseThrow(id);
 
         bookRepository.deleteById(id);
     }
 
-    public Page<Book> findAllByTitleContaining(String search, int from, int size) {
-        int pageNumber = from / size;
-        Pageable pageable = PageRequest.of(pageNumber, size);
-
-        if (search == null || search.isEmpty()) {
-            return bookRepository.findAll((pageable));
-        }
-
-        return bookRepository.findAllByTitleContaining(search, pageable);
-    }
-
-    private Book findByIdOrElseThrow(int id) {
+    private Book findByIdOrElseThrow(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Book with id %d not found", id)));

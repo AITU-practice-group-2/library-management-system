@@ -5,6 +5,7 @@ import com.practice.librarysystem.author.Author;
 import com.practice.librarysystem.author.AuthorMapper;
 import com.practice.librarysystem.author.AuthorRepository;
 import com.practice.librarysystem.author.AuthorService;
+import com.practice.librarysystem.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDTO getAuthorById(Long id) {
         Author author = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new NotFoundException("Author not found"));
         return AuthorMapper.toDTO(author);
     }
 
@@ -42,7 +43,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDTO updateAuthor(Long id, AuthorDTO dto) {
         Author existing = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new NotFoundException("Author not found"));
 
         existing.setName(dto.getName());
         existing.setBio(dto.getBio());

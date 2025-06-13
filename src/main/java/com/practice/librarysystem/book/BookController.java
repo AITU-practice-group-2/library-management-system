@@ -1,6 +1,7 @@
 package com.practice.librarysystem.book;
 
-import com.practice.librarysystem.book.dto.BookResponse;
+import com.practice.librarysystem.book.dto.BookFullResponse;
+import com.practice.librarysystem.book.dto.BookShortResponse;
 import com.practice.librarysystem.book.dto.NewBookRequest;
 import com.practice.librarysystem.book.dto.UpdateBookRequest;
 import jakarta.validation.Valid;
@@ -23,24 +24,24 @@ public class BookController {
     BookMapper bookMapper;
 
     @GetMapping
-    public List<BookResponse> findAllByMultipleParams(@RequestParam(required = false) String search,
-                                                      @RequestParam(required = false) @Min(1) Long author,
-                                                      @RequestParam(required = false) @Min(1) Long category,
-                                                      @RequestParam(defaultValue = "0") int from,
-                                                      @RequestParam(defaultValue = "10") int size) {
+    public List<BookFullResponse> findAllByMultipleParams(@RequestParam(required = false) String search,
+                                                           @RequestParam(required = false) @Min(1) Long author,
+                                                           @RequestParam(required = false) @Min(1) Long category,
+                                                           @RequestParam(defaultValue = "0") int from,
+                                                           @RequestParam(defaultValue = "10") int size) {
         return bookMapper.toDto(
                 bookService.findAllByMultipleParams(search, author, category, from, size));
     }
 
     @GetMapping("/{id}")
-    public BookResponse findById(@PathVariable Long id) {
+    public BookFullResponse findById(@PathVariable Long id) {
         return bookMapper.toDto(
                 bookService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookResponse createNew(@RequestBody @Valid NewBookRequest bookDto) {
+    public BookFullResponse createNew(@RequestBody @Valid NewBookRequest bookDto) {
         Long authorId = bookDto.getAuthor();
         Long categoryId = bookDto.getCategory();
 
@@ -51,8 +52,8 @@ public class BookController {
     }
 
     @PatchMapping("/{id}")
-    public BookResponse updateById(@PathVariable Long id,
-                                   @RequestBody @Valid UpdateBookRequest bookDto) {
+    public BookFullResponse updateById(@PathVariable Long id,
+                                       @RequestBody @Valid UpdateBookRequest bookDto) {
         Long authorId = bookDto.getAuthor();
         Long categoryId = bookDto.getCategory();
 

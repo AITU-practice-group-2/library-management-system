@@ -8,7 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/library")
 public class BookViewController {
     @GetMapping
-    public String showBooksPage() {
+    public String showBookListPage() {
         return "book-list";
+    }
+
+    @GetMapping("/{id}")
+    public String showBookDetailsPage() {
+        return "book-details";
     }
 }

@@ -1,6 +1,7 @@
 package com.practice.librarysystem.book;
 
-import com.practice.librarysystem.book.dto.BookResponse;
+import com.practice.librarysystem.book.dto.BookFullResponse;
+import com.practice.librarysystem.book.dto.BookShortResponse;
 import com.practice.librarysystem.book.dto.NewBookRequest;
 import com.practice.librarysystem.book.dto.UpdateBookRequest;
 import org.springframework.data.domain.Page;
@@ -10,8 +11,8 @@ import java.util.List;
 
 @Component
 public class BookMapper {
-    public BookResponse toDto(Book book) {
-        BookResponse bookDto = new BookResponse();
+    public BookFullResponse toDto(Book book) {
+        BookFullResponse bookDto = new BookFullResponse();
 
         bookDto.setId(book.getId());
         bookDto.setAuthor(book.getAuthor().getName());
@@ -25,9 +26,26 @@ public class BookMapper {
         return bookDto;
     }
 
-    public List<BookResponse> toDto(Page<Book> books) {
+    public List<BookFullResponse> toDto(Page<Book> books) {
         return books.stream()
                 .map(this::toDto)
+                .toList();
+    }
+
+    public BookShortResponse toShortDto(Book book) {
+        BookShortResponse bookDto = new BookShortResponse();
+
+        bookDto.setId(bookDto.getId());
+        bookDto.setTitle(bookDto.getTitle());
+        bookDto.setAvailable(book.getAvailable() > 0);
+        bookDto.setAuthor(book.getAuthor().getName());
+
+        return bookDto;
+    }
+
+    public List<BookShortResponse> toShortDto(Page<Book> books) {
+        return books.stream()
+                .map(this::toShortDto)
                 .toList();
     }
 

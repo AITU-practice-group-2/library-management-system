@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>BookTrack - Online Library management system</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="/assets/css/templatemo-scholar.css">
+    <link rel="stylesheet" href="/assets/css/owl.css">
+    <link rel="stylesheet" href="/assets/css/animate.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+    <!--
+
+
+    TemplateMo 586 Scholar
+
+    https://templatemo.com/tm-586-scholar
+
+    -->
+
+    <style>
+        .text-truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .text-truncate-4 {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- ***** Preloader Start ***** -->
+<div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+        <span class="dot"></span>
+        <div class="dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+<!-- ***** Preloader End ***** -->
+
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="index.html" class="logo">
+                        <h1>BookTrack</h1>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Serach Start ***** -->
+                    <div class="search-input">
+                        <form id="search" action="#">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Serach Start ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/library}" class="active">Books</a></li>
+                        <li class="scroll-to-section"><a href="#">Profile</a></li>
+                        <li class="scroll-to-section"><a href="#">Contact Us</a></li>
+                        <li class="scroll-to-section"><a href="#">Login</a></li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<div class="main-banner" id="top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="owl-carousel owl-banner">
+                    <div class="item item-1">
+                        <div class="header-text">
+                            <span class="category">Our Courses</span>
+                            <h2>With Scholar Teachers, Everything Is Easier</h2>
+                            <p>Scholar is free CSS template designed by TemplateMo for online educational related websites. This layout is based on the famous Bootstrap v5.3.0 framework.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#">Request Demo</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> What's Scholar?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item item-2">
+                        <div class="header-text">
+                            <span class="category">Best Result</span>
+                            <h2>Get the best result out of your effort</h2>
+                            <p>You are allowed to use this template for any educational or commercial purpose. You are not allowed to re-distribute the template ZIP file on any other website.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#">Request Demo</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> What's the best result?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item item-3">
+                        <div class="header-text">
+                            <span class="category">Online Learning</span>
+                            <h2>Online Learning helps you save the time</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporious incididunt ut labore et dolore magna aliqua suspendisse.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#">Request Demo</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> What's Online Course?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="services section" id="services">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 mb-4">
+                <div class="service-item">
+                    <div class="icon text-center">
+                        <img src="/assets/images/service-01.png" alt="Book Icon" />
+                    </div>
+                    <div class="main-content">
+                        <h4 id="bookTitle" class="text-truncate-2"></h4>
+                        <h6 id="bookAuthor" class="text-muted mb-3"></h6>
+                        <p id="bookDescription" class="text-truncate-4"></p>
+                        <div class="mt-3">
+                            <p><strong>Category:</strong> <span id="bookCategory"></span></p>
+                            <p><strong>Published:</strong> <span id="bookYear"></span></p>
+                            <p><strong>Pages:</strong> <span id="bookPages"></span></p>
+                            <p><strong>Available:</strong> <span id="bookAvailable"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <div class="container">
+        <div class="col-lg-12">
+            <p>Copyright © 2025 Unemployed Backends. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/js/isotope.min.js"></script>
+<script src="assets/js/owl-carousel.js"></script>
+<script src="assets/js/counter.js"></script>
+<script src="assets/js/custom.js"></script>
+
+<script>
+    async function fetchBookDetails() {
+        const path = window.location.pathname;
+        const bookId = path.split('/').pop(); // Gets {id} from /library/{id}
+
+        try {
+            const response = await fetch(`/books/${bookId}`);
+            if (!response.ok) throw new Error("Book not found");
+
+            const book = await response.json();
+
+            document.getElementById('bookTitle').textContent = book.title;
+            document.getElementById('bookAuthor').textContent = book.author;
+            document.getElementById('bookDescription').textContent = book.description;
+            document.getElementById('bookYear').textContent = book.publicationYear;
+            document.getElementById('bookPages').textContent = book.pages;
+            document.getElementById('bookAvailable').textContent = book.available;
+            document.getElementById('bookCategory').textContent = book.category;
+
+            const preloader = document.getElementById("js-preloader");
+            if (preloader) preloader.style.display = "none";
+
+        } catch (err) {
+            console.error(err);
+            document.querySelector(".services .container").innerHTML =
+                `<p class="text-danger text-center mt-5">Failed to load book details.</p>`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchBookDetails);
+</script>
+
+</body>
+</html>

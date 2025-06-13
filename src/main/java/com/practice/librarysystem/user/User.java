@@ -1,10 +1,15 @@
 package com.practice.librarysystem.user;
 
+import com.practice.librarysystem.reservation.Reservation;
+import com.practice.librarysystem.review.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "users")
 @Entity
@@ -20,4 +25,8 @@ public class User {
     String email;
     @Enumerated
     Role role;
+    @OneToMany(mappedBy = "user")
+    List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "reserver")
+    List<Reservation> reservations = new ArrayList<>();
 }

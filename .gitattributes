@@ -1,2 +1,6 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Exclude frontend folder
+src/main/resources/static/** linguist-vendored
+src/main/resources/templates/** linguist-vendored

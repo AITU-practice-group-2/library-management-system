@@ -1,4 +1,4 @@
-package com.practice.librarysystem.user.security;
+package com.practice.librarysystem.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.*;
@@ -20,24 +20,29 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers(
+                                "/",
+                                "/home",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/register",
+                                "/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
                         .permitAll()
-                        .usernameParameter("email") // login with email instead of username
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                );
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                )
+                .csrf(Customizer.withDefaults()); // safe default config
 
         return http.build();
     }

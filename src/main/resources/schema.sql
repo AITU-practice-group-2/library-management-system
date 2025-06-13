@@ -22,10 +22,11 @@ CREATE TABLE IF NOT EXISTS books (
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY ,
+    id SERIAL PRIMARY KEY,
     login VARCHAR(100) NOT NULL,
     password VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL
+    email VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL
 );
 
 
@@ -40,7 +41,7 @@ CREATE TABLE IF NOT EXISTS reservations (
     book_id INT REFERENCES books NOT NULL
 );
 
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
     id SERIAL PRIMARY KEY,
     comment VARCHAR(3000) NOT NULL,
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Profile</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="index.html" class="logo">
+                        <h1>BookTrack</h1>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Serach Start ***** -->
+                    <div class="search-input">
+                        <form id="search" action="#">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Serach Start ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li class="scroll-to-section"><a th:href="@{/}">Home</a></li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li class="scroll-to-section"><a href="#courses">Books</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
+                        <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <h2>Account Details</h2>
+    <div th:if="${user != null}">
+        <p><strong>Login:</strong> <span th:text="${user.login}">[login]</span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}">[email]</span></p>
+        <p><strong>Password:</strong> ********</p>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <div th:if="${user == null}">
+        <p>You must be <a th:href="@{/login}">logged in</a> to view your profile.</p>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="col-lg-12">
+            <p>Copyright © 2036 Scholar Organization. All rights reserved. &nbsp;&nbsp;&nbsp; Design: <a href="https://templatemo.com" rel="nofollow" target="_blank">TemplateMo</a></p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -57,9 +57,11 @@
                     <!-- ***** Serach Start ***** -->
                     <div class="search-input">
                         <form id="search" action="#">
-                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                            <i class="fa fa-search"></i>
-                        </form>
+                        <input type="text" placeholder="Type a Book Title" id='searchText' name="searchKeyword"/>
+                        <i class="fa fa-search" onclick="submitSearch()"></i>
+                    </form>
+
+
                     </div>
                     <!-- ***** Serach Start ***** -->
                     <!-- ***** Menu Start ***** -->
@@ -177,10 +179,12 @@
 <script>
     let currentPage = 0;
     const pageSize = 6;
+    let currentSearch = '';
+
 
     async function fetchBooks() {
         try {
-            const response = await fetch(`/books?from=${currentPage * pageSize}&size=${pageSize}`);
+            const response = await fetch(`/books?from=${currentPage * pageSize}&size=${pageSize}&search=${encodeURIComponent(currentSearch)}`);
             if (!response.ok) throw new Error("Failed to fetch books");
             const books = await response.json();
 
@@ -189,21 +193,25 @@
 
             books.forEach(book => {
                 container.innerHTML += `
-  <div class="col-lg-4 col-md-6 mb-4">
-    <a href="/library/${book.id}" style="text-decoration: none; color: inherit;">
-      <div class="service-item">
-        <div class="icon">
-          <img src="assets/images/service-01.png" alt="Book Icon">
-        </div>
-        <div class="main-content">
-          <h4 class="text-truncate-2">${book.title}</h4>
-          <h6>${book.author}</h6>
-          <p class="text-truncate-4">${book.description}</p>
-          <div><strong>Year:</strong> ${book.publicationYear} | <strong>Pages:</strong> ${book.pages}</div>
-        </div>
-      </div>
-    </a>
-  </div>
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="/library/${book.id}" style="text-decoration: none; color: inherit;">
+              <div class="service-item">
+                <div class="icon">
+                  <img src="assets/images/service-01.png" alt="Book Icon">
+                </div>
+                <div class="main-content">
+                  <h4 class="text-truncate-2">${book.title}</h4>
+                  <h6>${book.author}</h6>
+                  <p class="text-truncate-4">${book.description}</p>
+                  <div class="mt-2">
+                    ${book.available
+                            ? `<div class="badge bg-success text-white rounded-pill px-3 py-1">Available</div>`
+                            : `<div class="badge bg-danger text-white rounded-pill px-3 py-1">Unavailable</div>`}
+                    </div>
+                </div>
+              </div>
+            </a>
+          </div>
 `;
 
 
@@ -235,6 +243,19 @@
     });
 
     document.addEventListener("DOMContentLoaded", fetchBooks);
+
+    document.getElementById("search").addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitSearch();
+    });
+
+    function submitSearch() {
+        const input = document.getElementById("searchText");
+        currentSearch = input.value.trim();
+        currentPage = 0;
+        fetchBooks();
+    }
+
 </script>
 
 

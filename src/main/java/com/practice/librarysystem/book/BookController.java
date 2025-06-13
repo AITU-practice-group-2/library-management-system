@@ -24,12 +24,12 @@ public class BookController {
     BookMapper bookMapper;
 
     @GetMapping
-    public List<BookFullResponse> findAllByMultipleParams(@RequestParam(required = false) String search,
+    public List<BookShortResponse> findAllByMultipleParams(@RequestParam(required = false) String search,
                                                            @RequestParam(required = false) @Min(1) Long author,
                                                            @RequestParam(required = false) @Min(1) Long category,
                                                            @RequestParam(defaultValue = "0") int from,
                                                            @RequestParam(defaultValue = "10") int size) {
-        return bookMapper.toDto(
+        return bookMapper.toShortDto(
                 bookService.findAllByMultipleParams(search, author, category, from, size));
     }
 

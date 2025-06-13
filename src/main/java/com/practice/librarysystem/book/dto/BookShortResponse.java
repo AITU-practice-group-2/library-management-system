@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 public class BookShortResponse {
     Long id;
     String title;
+    String description;
     Boolean available;
     String author;
 }

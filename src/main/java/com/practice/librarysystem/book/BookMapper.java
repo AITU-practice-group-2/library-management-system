@@ -35,8 +35,9 @@ public class BookMapper {
     public BookShortResponse toShortDto(Book book) {
         BookShortResponse bookDto = new BookShortResponse();
 
-        bookDto.setId(bookDto.getId());
-        bookDto.setTitle(bookDto.getTitle());
+        bookDto.setId(book.getId());
+        bookDto.setTitle(book.getTitle());
+        bookDto.setDescription(book.getDescription());
         bookDto.setAvailable(book.getAvailable() > 0);
         bookDto.setAuthor(book.getAuthor().getName());
 

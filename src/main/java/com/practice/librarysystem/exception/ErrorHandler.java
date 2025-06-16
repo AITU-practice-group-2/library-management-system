@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,12 @@ public class ErrorHandler {
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        ex.printStackTrace(); // log full error in backend
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler

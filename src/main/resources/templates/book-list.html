@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>BookTrack - Online Library management system</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="/assets/css/templatemo-scholar.css">
+    <link rel="stylesheet" href="/assets/css/owl.css">
+    <link rel="stylesheet" href="/assets/css/animate.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+    <!--
+
+    TemplateMo 586 Scholar
+
+    https://templatemo.com/tm-586-scholar
+
+    -->
+</head>
+
+<body>
+
+<!-- ***** Preloader Start ***** -->
+<div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+        <span class="dot"></span>
+        <div class="dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+<!-- ***** Preloader End ***** -->
+
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/}" class="logo">
+                        <h1>BookTrack</h1>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Serach Start ***** -->
+                    <div class="search-input">
+                        <form id="search" action="#">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Serach Start ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li class="scroll-to-section"><a th:href="@{/}" class="active">Home</a></li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
+                        <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<div class="main-banner" id="top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="owl-carousel owl-banner">
+                    <div class="item item-1">
+                        <div class="header-text">
+                            <span class="category">Our Courses</span>
+                            <h2>With Scholar Teachers, Everything Is Easier</h2>
+                            <p>Scholar is free CSS template designed by TemplateMo for online educational related websites. This layout is based on the famous Bootstrap v5.3.0 framework.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#">Request Demo</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> What's Scholar?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item item-2">
+                        <div class="header-text">
+                            <span class="category">Best Result</span>
+                            <h2>Get the best result out of your effort</h2>
+                            <p>You are allowed to use this template for any educational or commercial purpose. You are not allowed to re-distribute the template ZIP file on any other website.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#">Request Demo</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> What's the best result?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item item-3">
+                        <div class="header-text">
+                            <span class="category">Online Learning</span>
+                            <h2>Online Learning helps you save the time</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporious incididunt ut labore et dolore magna aliqua suspendisse.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#">Request Demo</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> What's Online Course?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="services section" id="services">
+    <div class="container">
+        <div class="row" id="bookContainer">
+            <!-- Dynamic book cards will be inserted here -->
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button id="prevBtn" class="btn btn-primary mx-2">Previous</button>
+            <button id="nextBtn" class="btn btn-primary mx-2">Next</button>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="col-lg-12">
+            <p>Copyright © 2025 Unemployed Backenders. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/js/isotope.min.js"></script>
+<script src="/assets/js/owl-carousel.js"></script>
+<script src="/assets/js/counter.js"></script>
+<script src="/assets/js/custom.js"></script>
+
+<script>
+    let currentPage = 0;
+    const pageSize = 6;
+    let currentSearch = '';
+
+
+    async function fetchBooks() {
+        try {
+            const response = await fetch(`/books?from=${currentPage * pageSize}&size=${pageSize}&search=${encodeURIComponent(currentSearch)}`);
+            if (!response.ok) throw new Error("Failed to fetch books");
+            const books = await response.json();
+
+            const container = document.getElementById('bookContainer');
+            container.innerHTML = '';
+
+            books.forEach(book => {
+                container.innerHTML += `
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="/library/${book.id}" style="text-decoration: none; color: inherit;">
+              <div class="service-item">
+                <div class="icon">
+                  <img src="assets/images/service-01.png" alt="Book Icon">
+                </div>
+                <div class="main-content">
+                  <h4 class="text-truncate-2">${book.title}</h4>
+                  <h6>${book.author}</h6>
+                  <p class="text-truncate-4">${book.description}</p>
+                  <div class="mt-2">
+                    ${book.available
+                            ? `<div class="badge bg-success text-white rounded-pill px-3 py-1">Available</div>`
+                            : `<div class="badge bg-danger text-white rounded-pill px-3 py-1">Unavailable</div>`}
+                    </div>
+                </div>
+              </div>
+            </a>
+          </div>
+`;
+
+
+            });
+
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = books.length < pageSize;
+
+        } catch (err) {
+            console.error(err);
+            const container = document.getElementById('bookContainer');
+            container.innerHTML = `<p class="text-danger">Failed to load books.</p>`;
+        } finally {
+            const preloader = document.getElementById("js-preloader");
+            if (preloader) preloader.style.display = "none";
+        }
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            fetchBooks();
+        }
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        currentPage++;
+        fetchBooks();
+    });
+
+    document.addEventListener("DOMContentLoaded", fetchBooks);
+
+    document.getElementById("search").addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitSearch();
+    });
+
+    function submitSearch() {
+        const input = document.getElementById("searchText");
+        currentSearch = input.value.trim();
+        currentPage = 0;
+        fetchBooks();
+    }
+
+</script>
+
+
+</body>
+</html>

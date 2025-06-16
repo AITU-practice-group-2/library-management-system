@@ -33,13 +33,14 @@ public class SecurityConfig {
                                 "/register",
                                 "/assets/**",
                                 "/vendor/**",
-                                "/reviews/**", // correct placement
+                                "/reviews/**",
                                 "/login"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .defaultSuccessUrl("/", true) // Redirect to home after login
                         .usernameParameter("email")
                         .permitAll()
                 )
@@ -52,7 +53,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -63,6 +63,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // or use NoOpPasswordEncoder for testing
+        return new BCryptPasswordEncoder();
     }
 }

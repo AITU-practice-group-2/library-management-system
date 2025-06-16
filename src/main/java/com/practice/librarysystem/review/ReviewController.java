@@ -52,7 +52,7 @@ public class ReviewController {
     @PutMapping("/{id}")
     public ResponseEntity<ReviewResponseDTO> update(
             @PathVariable Long id,
-            @RequestBody @Valid ReviewRequestDTO dto,
+            @RequestBody ReviewRequestDTO dto,
             Principal principal) {
 
         Review updatedReview = reviewService.updateReview(id, dto, principal.getName());
@@ -61,8 +61,9 @@ public class ReviewController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id, Principal principal) {
+    public void deleteReview(@PathVariable Long id, Principal principal) {
         reviewService.deleteReview(id, principal.getName());
     }
+
 }
 

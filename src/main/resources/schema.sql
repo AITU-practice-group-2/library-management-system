@@ -47,5 +47,6 @@ CREATE TABLE IF NOT EXISTS reviews (
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     reviewer_id INT REFERENCES users NOT NULL,
-    book_id INT REFERENCES books NOT NULL
+    book_id INT REFERENCES books NOT NULL,
+    UNIQUE (reviewer_id, book_id)
 );

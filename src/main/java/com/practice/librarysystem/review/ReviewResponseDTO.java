@@ -10,5 +10,6 @@ public class ReviewResponseDTO {
     private int rating;
     private String bookTitle;
     private String userName;
+    private Long userId;
     private LocalDateTime createdAt;
 }

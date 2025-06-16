@@ -1,4 +1,4 @@
-package com.practice.librarysystem.user.security;
+package com.practice.librarysystem.security;
 
 import com.practice.librarysystem.exception.NotFoundException;
 import com.practice.librarysystem.user.User;

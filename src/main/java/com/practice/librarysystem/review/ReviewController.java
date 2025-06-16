@@ -3,7 +3,7 @@ package com.practice.librarysystem.review;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.security.Principal;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -37,26 +37,32 @@ public class ReviewController {
 
 
    @PostMapping
-   @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ReviewResponseDTO> createReview(@RequestBody @Valid ReviewRequestDTO dto) {
         Review review = reviewService.createReview(dto);
         ReviewResponseDTO response = reviewMapper.toDTO(review);
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/book/{bookId}")
+    public List<ReviewResponseDTO> getReviewsByBook(@PathVariable Long bookId) {
+        return reviewService.getReviewsByBookId(bookId);
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<ReviewResponseDTO> update(
             @PathVariable Long id,
-            @RequestBody @Valid ReviewRequestDTO dto) {
+            @RequestBody @Valid ReviewRequestDTO dto,
+            Principal principal) {
 
-        Review updatedReview = reviewService.updateReview(id, dto);
+        Review updatedReview = reviewService.updateReview(id, dto, principal.getName());
         return ResponseEntity.ok(reviewMapper.toDTO(updatedReview));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        reviewService.deleteReview(id);
+    public void delete(@PathVariable Long id, Principal principal) {
+        reviewService.deleteReview(id, principal.getName());
     }
 }
 

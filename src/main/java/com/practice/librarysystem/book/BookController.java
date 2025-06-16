@@ -4,6 +4,8 @@ import com.practice.librarysystem.book.dto.BookFullResponse;
 import com.practice.librarysystem.book.dto.BookShortResponse;
 import com.practice.librarysystem.book.dto.NewBookRequest;
 import com.practice.librarysystem.book.dto.UpdateBookRequest;
+import com.practice.librarysystem.util.RequestConstants;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
@@ -30,7 +32,11 @@ public class BookController {
                                                            @RequestParam(required = false) @Min(1) Long author,
                                                            @RequestParam(required = false) @Min(1) Long category,
                                                            @RequestParam(defaultValue = "0") int from,
-                                                           @RequestParam(defaultValue = "10") int size) {
+                                                           @RequestParam(defaultValue = "10") int size,
+                                                           HttpServletRequest httpServletRequest) {
+        String ip = RequestConstants.getClientIp(httpServletRequest);
+        log.trace("Endpoint GET: /books was accessed by IP:{}", ip);
+
         return bookMapper.toShortDto(
                 bookService.findAllByMultipleParams(search, author, category, from, size));
     }

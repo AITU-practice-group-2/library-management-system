@@ -22,6 +22,7 @@ public class BookMapper {
         bookDto.setPublicationYear(book.getPublicationYear());
         bookDto.setTitle(book.getTitle());
         bookDto.setDescription(book.getDescription());
+        bookDto.setImage(book.getImageSource());
 
         return bookDto;
     }
@@ -40,6 +41,7 @@ public class BookMapper {
         bookDto.setDescription(book.getDescription());
         bookDto.setAvailable(book.getAvailable() > 0);
         bookDto.setAuthor(book.getAuthor().getName());
+        bookDto.setImage(book.getImageSource());
 
         return bookDto;
     }
@@ -58,6 +60,7 @@ public class BookMapper {
         book.setDescription(dto.getDescription());
         book.setTitle(dto.getTitle());
         book.setPublicationYear(dto.getPublicationYear());
+        book.setImageSource(dto.getImage());
 
 
         return book;
@@ -71,7 +74,7 @@ public class BookMapper {
         book.setDescription(dto.getDescription());
         book.setTitle(dto.getTitle());
         book.setPublicationYear(dto.getPublicationYear());
-
+        book.setImageSource(dto.getImage());
 
         return book;
     }

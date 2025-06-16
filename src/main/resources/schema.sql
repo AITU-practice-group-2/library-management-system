@@ -18,14 +18,15 @@ CREATE TABLE IF NOT EXISTS books (
     pages INT NOT NULL,
     available INT NOT NULL,
     author_id INT REFERENCES authors NOT NULL,
-    category_id INT REFERENCES categories NOT NULL
+    category_id INT REFERENCES categories NOT NULL,
+    image_src VARCHAR(1000)
 );
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     login VARCHAR(100) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     role VARCHAR(50) NOT NULL
 );
 
@@ -47,5 +48,6 @@ CREATE TABLE IF NOT EXISTS reviews (
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     reviewer_id INT REFERENCES users NOT NULL,
-    book_id INT REFERENCES books NOT NULL
+    book_id INT REFERENCES books NOT NULL,
+    UNIQUE (reviewer_id, book_id)
 );

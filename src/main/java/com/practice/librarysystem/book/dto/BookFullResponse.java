@@ -22,4 +22,6 @@ public class BookFullResponse {
     String author;
 
     String category;
+
+    String image;
 }

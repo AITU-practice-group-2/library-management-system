@@ -82,7 +82,7 @@
                     <!-- ***** Serach Start ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li class="scroll-to-section"><a th:href="@{/}" class="active">Home</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
                         <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
                         <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
@@ -161,18 +161,26 @@
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10 mb-4">
                 <div class="service-item">
-                    <div class="icon text-center">
-                        <img src="/assets/images/service-01.png" alt="Book Icon" />
-                    </div>
-                    <div class="main-content">
-                        <h4 id="bookTitle" class="text-truncate-2"></h4>
-                        <h6 id="bookAuthor" class="text-muted mb-3"></h6>
-                        <p id="bookDescription" class="text-truncate-4"></p>
-                        <div class="mt-3">
-                            <p><strong>Category:</strong> <span id="bookCategory"></span></p>
-                            <p><strong>Published:</strong> <span id="bookYear"></span></p>
-                            <p><strong>Pages:</strong> <span id="bookPages"></span></p>
-                            <p><strong>Available:</strong> <span id="bookAvailable"></span></p>
+                    <div class="row">
+                        <!-- Book Image Column -->
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div class="text-center">
+                                <img id="bookImage" src="" alt="Book Cover" class="img-fluid rounded shadow" style="max-height: 400px; width: auto;" />
+                            </div>
+                        </div>
+                        <!-- Book Details Column -->
+                        <div class="col-md-8">
+                            <div class="main-content">
+                                <h4 id="bookTitle" class="text-truncate-2"></h4>
+                                <h6 id="bookAuthor" class="text-muted mb-3"></h6>
+                                <p id="bookDescription" class="text-truncate-4"></p>
+                                <div class="mt-3">
+                                    <p><strong>Category:</strong> <span id="bookCategory"></span></p>
+                                    <p><strong>Published:</strong> <span id="bookYear"></span></p>
+                                    <p><strong>Pages:</strong> <span id="bookPages"></span></p>
+                                    <p><strong>Available:</strong> <span id="bookAvailable"></span></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,6 +239,15 @@
             document.getElementById('bookPages').textContent = book.pages;
             document.getElementById('bookAvailable').textContent = book.available;
             document.getElementById('bookCategory').textContent = book.category;
+
+            // Set the book image
+            const bookImage = document.getElementById('bookImage');
+            if (book.image) {
+                bookImage.src = book.image;
+                bookImage.alt = `Cover of ${book.title}`;
+            } else {
+                bookImage.src = '/assets/images/default-book-cover.jpg'; // fallback image
+            }
 
             document.getElementById("js-preloader").style.display = "none";
 

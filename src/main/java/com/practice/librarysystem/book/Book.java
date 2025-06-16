@@ -38,6 +38,9 @@ public class Book {
     @ManyToOne
     Category category;
 
+    @Column(name = "image_src")
+    String imageSource;
+
     @OneToMany(mappedBy = "book")
     final List<Reservation> reservations = new ArrayList<>();
 

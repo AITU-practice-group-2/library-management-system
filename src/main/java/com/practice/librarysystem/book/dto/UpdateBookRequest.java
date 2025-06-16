@@ -23,4 +23,6 @@ public class UpdateBookRequest {
     Long author;
 
     Long category;
+
+    String image;
 }

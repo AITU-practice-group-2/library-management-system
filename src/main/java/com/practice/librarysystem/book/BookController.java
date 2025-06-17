@@ -4,7 +4,6 @@ import com.practice.librarysystem.book.dto.BookFullResponse;
 import com.practice.librarysystem.book.dto.BookShortResponse;
 import com.practice.librarysystem.book.dto.NewBookRequest;
 import com.practice.librarysystem.book.dto.UpdateBookRequest;
-import com.practice.librarysystem.util.RequestConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -16,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.practice.librarysystem.util.RequestConstants.getClientIp;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -34,22 +35,30 @@ public class BookController {
                                                            @RequestParam(defaultValue = "0") int from,
                                                            @RequestParam(defaultValue = "10") int size,
                                                            HttpServletRequest httpServletRequest) {
-        String ip = RequestConstants.getClientIp(httpServletRequest);
-        log.trace("Endpoint GET: /books was accessed by IP:{}", ip);
+
+        log.info("Endpoint GET: /books was accessed by IP:{}", getClientIp(httpServletRequest));
 
         return bookMapper.toShortDto(
                 bookService.findAllByMultipleParams(search, author, category, from, size));
     }
 
     @GetMapping("/{id}")
-    public BookFullResponse findById(@PathVariable Long id) {
+    public BookFullResponse findById(@PathVariable Long id,
+                                     HttpServletRequest httpServletRequest) {
+
+        log.info("Endpoint GET: /books/{} was accessed by IP:{}", id, getClientIp(httpServletRequest));
+
         return bookMapper.toDto(
                 bookService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookFullResponse createNew(@RequestBody @Valid NewBookRequest bookDto) {
+    public BookFullResponse createNew(@RequestBody @Valid NewBookRequest bookDto,
+                                      HttpServletRequest httpServletRequest) {
+
+        log.info("Endpoint POST: /books was accessed by IP:{}", getClientIp(httpServletRequest));
+
         Long authorId = bookDto.getAuthor();
         Long categoryId = bookDto.getCategory();
 
@@ -61,7 +70,11 @@ public class BookController {
 
     @PatchMapping("/{id}")
     public BookFullResponse updateById(@PathVariable Long id,
-                                       @RequestBody @Valid UpdateBookRequest bookDto) {
+                                       @RequestBody @Valid UpdateBookRequest bookDto,
+                                       HttpServletRequest httpServletRequest) {
+
+        log.info("Endpoint PATCH: /books/{id} was accessed by IP:{}", getClientIp(httpServletRequest));
+
         Long authorId = bookDto.getAuthor();
         Long categoryId = bookDto.getCategory();
 
@@ -73,7 +86,11 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public void deleteById(@PathVariable Long id,
+                           HttpServletRequest httpServletRequest) {
+
+        log.info("Endpoint DELETE: /books/{id} was accessed by IP:{}", getClientIp(httpServletRequest));
+
         bookService.deleteById(id);
     }
 }

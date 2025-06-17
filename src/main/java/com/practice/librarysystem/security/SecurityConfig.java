@@ -33,8 +33,7 @@ public class SecurityConfig {
                                 "/register",
                                 "/assets/**",
                                 "/vendor/**",
-                                "/login",
-                                "/authors/**"
+                                "/login"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

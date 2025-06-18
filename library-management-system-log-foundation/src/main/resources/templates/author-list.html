@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>BookTrack - Authors</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="/assets/css/templatemo-scholar.css">
+    <link rel="stylesheet" href="/assets/css/owl.css">
+    <link rel="stylesheet" href="/assets/css/animate.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+    <!--
+
+    TemplateMo 586 Scholar
+
+    https://templatemo.com/tm-586-scholar
+
+    -->
+</head>
+
+<body>
+
+<!-- ***** Preloader Start ***** -->
+<div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+        <span class="dot"></span>
+        <div class="dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+<!-- ***** Preloader End ***** -->
+
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/}" class="logo">
+                        <h1>BookTrack</h1>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Serach Start ***** -->
+                    <div class="search-input">
+                        <form id="search" action="#">
+                            <input type="text" placeholder="Search authors..." id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Serach Start ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
+                        <li class="scroll-to-section"><a href="#" class="active">Authors</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
+                        <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<div class="main-banner" id="top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="owl-carousel owl-banner">
+                    <div class="item item-1">
+                        <div class="header-text">
+                            <span class="category">Our Authors</span>
+                            <h2>Discover Amazing Authors and Their Works</h2>
+                            <p>Explore our collection of talented authors and dive into their literary masterpieces. From classic literature to contemporary fiction, find your next favorite author.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#authors">Browse Authors</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> Learn More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item item-2">
+                        <div class="header-text">
+                            <span class="category">Literary Excellence</span>
+                            <h2>Authors Who Shape Our World</h2>
+                            <p>Meet the brilliant minds behind the stories that inspire, educate, and entertain. Each author brings a unique perspective and voice to the world of literature.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#authors">Explore Authors</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> Discover Stories</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item item-3">
+                        <div class="header-text">
+                            <span class="category">Reading Journey</span>
+                            <h2>Start Your Literary Adventure</h2>
+                            <p>Begin your journey through the world of literature by exploring our diverse collection of authors. From debut novelists to established literary giants.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#authors">Start Reading</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#"><i class="fa fa-play"></i> Find Your Author</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="services section" id="authors">
+    <div class="container">
+        <div class="row" id="authorContainer">
+            <!-- Dynamic author cards will be inserted here -->
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            <button id="prevBtn" class="btn btn-primary mx-2">Previous</button>
+            <button id="nextBtn" class="btn btn-primary mx-2">Next</button>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="col-lg-12">
+            <p>Copyright © 2025 Unemployed Backenders. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/js/isotope.min.js"></script>
+<script src="/assets/js/owl-carousel.js"></script>
+<script src="/assets/js/counter.js"></script>
+<script src="/assets/js/custom.js"></script>
+
+<script>
+    let currentPage = 0;
+    const pageSize = 6;
+    let currentSearch = '';
+
+    async function fetchAuthors() {
+        try {
+            const response = await fetch(`/authors?from=${currentPage * pageSize}&size=${pageSize}&search=${encodeURIComponent(currentSearch)}`);
+            if (!response.ok) throw new Error("Failed to fetch authors");
+            const authors = await response.json();
+
+            const container = document.getElementById('authorContainer');
+            container.innerHTML = '';
+
+            authors.forEach(author => {
+                container.innerHTML += `
+          <div class="col-lg-4 col-md-6 mb-4">
+            <a href="/authors-view/${author.id}" style="text-decoration: none; color: inherit;">
+              <div class="service-item">
+                <div class="main-content">
+                  <h4 class="text-truncate-2">${author.name}</h4>
+                  <p class="text-truncate-4">${author.bio || 'No bio available'}</p>
+                  <div class="mt-2">
+                    <div class="badge bg-info text-white rounded-pill px-3 py-1">Author</div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+`;
+            });
+
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = authors.length < pageSize;
+
+        } catch (err) {
+            console.error(err);
+            const container = document.getElementById('authorContainer');
+            container.innerHTML = `<p class="text-danger">Failed to load authors.</p>`;
+        } finally {
+            const preloader = document.getElementById("js-preloader");
+            if (preloader) preloader.style.display = "none";
+        }
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            fetchAuthors();
+        }
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        currentPage++;
+        fetchAuthors();
+    });
+
+    document.addEventListener("DOMContentLoaded", fetchAuthors);
+
+    document.getElementById("search").addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitSearch();
+    });
+
+    function submitSearch() {
+        const input = document.getElementById("searchText");
+        currentSearch = input.value.trim();
+        currentPage = 0;
+        fetchAuthors();
+    }
+
+</script>
+
+</body>
+</html> 

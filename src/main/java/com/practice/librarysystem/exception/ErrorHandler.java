@@ -14,6 +14,45 @@ import java.time.LocalDateTime;
 public class ErrorHandler {
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handle(ValidationException e) {
+        log.warn(e.getMessage());
+
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError handle(ForbiddenAccessException e) {
+        log.warn(e.getMessage());
+
+        return ApiError.builder()
+                .status(HttpStatus.FORBIDDEN.name())
+                .reason("Insufficient rights to proceed")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handle(NotFoundException e) {
+        log.warn(e.getMessage());
+
+        return ApiError.builder()
+                .status(HttpStatus.NOT_FOUND.name())
+                .reason("Object not found")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handle(DataConflictException e) {
         log.warn(e.getMessage());
@@ -34,32 +73,6 @@ public class ErrorHandler {
         return ApiError.builder()
                 .status(HttpStatus.CONFLICT.name())
                 .reason("Data conflict")
-                .message(e.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handle(ValidationException e) {
-        log.warn(e.getMessage());
-
-        return ApiError.builder()
-                .status(HttpStatus.BAD_REQUEST.name())
-                .reason("")
-                .message(e.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handle(NotFoundException e) {
-        log.warn(e.getMessage());
-
-        return ApiError.builder()
-                .status(HttpStatus.NOT_FOUND.name())
-                .reason("Object not found")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();

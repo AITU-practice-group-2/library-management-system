@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 import static com.practice.librarysystem.util.RequestConstants.getClientIp;
@@ -55,42 +56,49 @@ public class BookController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookFullResponse createNew(@RequestBody @Valid NewBookRequest bookDto,
-                                      HttpServletRequest httpServletRequest) {
+                                      HttpServletRequest httpServletRequest,
+                                      Principal principal) {
 
         log.info("Endpoint POST: /books was accessed by IP:{}", getClientIp(httpServletRequest));
 
         Long authorId = bookDto.getAuthor();
         Long categoryId = bookDto.getCategory();
+        String email = principal.getName();
 
         Book book = bookMapper.fromDto(bookDto);
 
         return bookMapper.toDto(
-                bookService.createNew(book, authorId, categoryId));
+                bookService.createNew(book, authorId, categoryId, email));
     }
 
     @PatchMapping("/{id}")
     public BookFullResponse updateById(@PathVariable Long id,
                                        @RequestBody @Valid UpdateBookRequest bookDto,
-                                       HttpServletRequest httpServletRequest) {
+                                       HttpServletRequest httpServletRequest,
+                                       Principal principal) {
 
         log.info("Endpoint PATCH: /books/{id} was accessed by IP:{}", getClientIp(httpServletRequest));
 
         Long authorId = bookDto.getAuthor();
         Long categoryId = bookDto.getCategory();
+        String email = principal.getName();
 
         Book book = bookMapper.fromDto(bookDto);
 
         return bookMapper.toDto(
-                bookService.updateById(id, book, authorId, categoryId));
+                bookService.updateById(id, book, authorId, categoryId, email));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id,
-                           HttpServletRequest httpServletRequest) {
+                           HttpServletRequest httpServletRequest,
+                           Principal principal) {
 
         log.info("Endpoint DELETE: /books/{id} was accessed by IP:{}", getClientIp(httpServletRequest));
 
-        bookService.deleteById(id);
+        String email = principal.getName();
+
+        bookService.deleteById(id, email);
     }
 }

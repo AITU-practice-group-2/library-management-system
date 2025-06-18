@@ -1,5 +1,6 @@
 package com.practice.librarysystem.user;
 
+import com.practice.librarysystem.util.RequestConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody @Valid UserNewDto userNewDto,
                           HttpServletRequest httpServletRequest) {
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint POST: /users was accessed by IP:{}", ip);
         return userMapper.toDto(userService.create(userNewDto));
     }
@@ -32,7 +33,7 @@ public class UserController {
     public List<UserDto> findAll(@RequestParam(defaultValue = "0") int from,
                                  @RequestParam(defaultValue = "10") int size,
                                  HttpServletRequest httpServletRequest) {
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint GET: /users was accessed by IP:{}", ip);
         return userMapper.toDto(userService.findAll(from, size));
     }
@@ -40,7 +41,7 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable Long id,
                             HttpServletRequest httpServletRequest) {
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint GET: /users/{id} was accessed by IP:{}", ip);
         return userMapper.toDto(userService.findById(id));
     }
@@ -48,7 +49,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable Long id, @RequestBody @Valid UserNewDto newUser,
                           HttpServletRequest httpServletRequest) {
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint PATCH: /users/{id} was accessed by IP:{}", ip);
         return userMapper.toDto(userService.update(id, newUser));
     }
@@ -57,7 +58,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id,
                        HttpServletRequest httpServletRequest) {
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint DELETE: /users/{id} was accessed by IP:{}", ip);
         userService.delete(id);
     }
@@ -65,7 +66,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<Long> getCurrentUserId(Principal principal,
                                                  HttpServletRequest httpServletRequest) {
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint GET: /users/me was accessed by IP:{}", ip);
         String email = principal.getName();
         User user = userService.findByEmail(email);

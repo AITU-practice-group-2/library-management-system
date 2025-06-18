@@ -2,6 +2,7 @@ package com.practice.librarysystem.security;
 
 import com.practice.librarysystem.user.UserController;
 import com.practice.librarysystem.user.UserNewDto;
+import com.practice.librarysystem.util.RequestConstants;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class LoginController {
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             HttpServletRequest httpServletRequest) {
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         if (error != null) {
             log.warn("Authorisation failed from IP: {}", ip);
         }
@@ -30,7 +31,7 @@ public class LoginController {
     @GetMapping("/register")
     public String registerForm(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("user", new UserNewDto());
-        String ip = httpServletRequest.getRemoteAddr();
+        String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint GET: /register was accessed by IP:{}", ip);
         return "register";
     }
@@ -38,12 +39,12 @@ public class LoginController {
     @PostMapping("/register")
     public String registerSubmit(@ModelAttribute("user") UserNewDto userDto, HttpServletRequest request) {
         userController.create(userDto, request);
-
+        String ip = RequestConstants.getClientIp(request);
         try {
-            log.info("Successful authorisation!");
+            log.info("Successful authorisation from IP:{}!", ip);
             request.login(userDto.getEmail(), userDto.getPassword());
         } catch (ServletException e) {
-            log.warn("Authorisation failed.");
+            log.warn("Authorisation failed from IP:{}.", ip);
             return "redirect:/login?error";
         }
 

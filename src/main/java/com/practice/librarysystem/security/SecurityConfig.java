@@ -33,8 +33,9 @@ public class SecurityConfig {
                                 "/register",
                                 "/assets/**",
                                 "/vendor/**",
-                                "/reviews/**",
-                                "/login"
+                                "/login",
+                                "/books",
+                                "library"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

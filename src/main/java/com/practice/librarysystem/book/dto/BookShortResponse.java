@@ -12,4 +12,5 @@ public class BookShortResponse {
     String description;
     Boolean available;
     String author;
+    String image;
 }

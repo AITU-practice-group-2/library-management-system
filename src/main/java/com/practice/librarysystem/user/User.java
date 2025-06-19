@@ -23,7 +23,7 @@ public class User {
     String login;
     String password;
     String email;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     Role role;
     @OneToMany(mappedBy = "user")
     List<Review> reviews = new ArrayList<>();

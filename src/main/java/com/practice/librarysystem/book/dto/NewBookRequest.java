@@ -15,7 +15,7 @@ public class NewBookRequest {
     String description;
 
     @NotNull
-    @Size(max = 2027)
+    @Max(2027)
     Integer publicationYear;
 
     @NotNull
@@ -31,4 +31,6 @@ public class NewBookRequest {
 
     @NotNull
     Long category;
+
+    String image;
 }

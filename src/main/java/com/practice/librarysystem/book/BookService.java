@@ -36,53 +36,53 @@ public class BookService {
         if (search != null && !search.isBlank()
                 && authorId != null && categoryId != null) {
 
-            return bookRepository.findAllByTitleContainingAndAuthor_IdAndCategory_Id(
+            return bookRepository.findAllByTitleContainingAndAuthor_IdAndCategory_IdOrderByPopularity(
                     search, authorId, categoryId, pageable);
         }
 
         if (search != null && !search.isBlank()
                 && authorId == null && categoryId == null) {
 
-            return bookRepository.findAllByTitleContaining(search, pageable);
+            return bookRepository.findAllByTitleContainingOrderByPopularity(search, pageable);
         }
 
         if (authorId != null
                 && categoryId == null
                 && (search == null || search.isBlank())) {
 
-            return bookRepository.findAllByAuthor_Id(authorId, pageable);
+            return bookRepository.findAllByAuthor_IdOrderByPopularity(authorId, pageable);
         }
 
         if (categoryId != null
                 && authorId == null
                 && (search == null || search.isBlank())) {
 
-            return bookRepository.findAllByCategory_Id(categoryId, pageable);
+            return bookRepository.findAllByCategory_IdOrderByPopularity(categoryId, pageable);
         }
 
         if (search != null && !search.isBlank()
                 && authorId != null
                 && categoryId == null) {
 
-            return bookRepository.findAllByTitleContainingAndAuthor_Id(search, authorId, pageable);
+            return bookRepository.findAllByTitleContainingAndAuthor_IdOrderByPopularity(search, authorId, pageable);
         }
 
         if (search != null && !search.isBlank()
                 && categoryId != null
                 && authorId == null) {
 
-            return bookRepository.findAllByTitleContainingAndCategory_Id(search, categoryId, pageable);
+            return bookRepository.findAllByTitleContainingAndCategory_IdOrderByPopularity(search, categoryId, pageable);
         }
 
         if (authorId != null
                 && categoryId != null
                 && (search == null || search.isBlank())) {
 
-            return bookRepository.findAllByAuthor_IdAndCategory_Id(authorId, categoryId, pageable);
+            return bookRepository.findAllByAuthor_IdAndCategory_IdOrderByPopularity(authorId, categoryId, pageable);
         }
 
 
-        return bookRepository.findAll(pageable);
+        return bookRepository.findAllByOrderByPopularityDesc(pageable);
     }
 
     public Book findById(Long id) {

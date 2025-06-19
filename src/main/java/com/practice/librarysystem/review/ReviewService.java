@@ -58,30 +58,25 @@ public class ReviewService {
 
 
     public Review createReview(ReviewRequestDTO dto) {
-        try {
-            System.out.println("Creating review for userId=" + dto.getUserId() + ", bookId=" + dto.getBookId());
+        System.out.println("Creating review for userId=" + dto.getUserId() + ", bookId=" + dto.getBookId());
 
-            User user = userRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new NotFoundException("User not found with id: " + dto.getUserId()));
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + dto.getUserId()));
 
-            Book book = bookRepository.findById(dto.getBookId())
-                    .orElseThrow(() -> new NotFoundException("Book not found with id: " + dto.getBookId()));
+        Book book = bookRepository.findById(dto.getBookId())
+                .orElseThrow(() -> new NotFoundException("Book not found with id: " + dto.getBookId()));
 
-            Review review = new Review();
-            review.setUser(user);
-            review.setBook(book);
-            review.setComment(dto.getComment());
-            review.setRating(dto.getRating());
-            review.setCreatedAt(LocalDateTime.now());
+        Review review = new Review();
+        review.setUser(user);
+        review.setBook(book);
+        review.setComment(dto.getComment());
+        review.setRating(dto.getRating());
+        review.setCreatedAt(LocalDateTime.now());
 
-            Review saved = reviewRepository.save(review);
-            System.out.println("Saved review with id: " + saved.getId());
+        Review saved = reviewRepository.save(review);
+        System.out.println("Saved review with id: " + saved.getId());
 
-            return saved;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        return saved;
     }
 
     public Review updateReview(Long id, ReviewRequestDTO dto, String email) {

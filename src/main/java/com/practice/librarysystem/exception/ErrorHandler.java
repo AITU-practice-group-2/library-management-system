@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.http.ResponseEntity;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -14,6 +14,46 @@ import java.time.LocalDateTime;
 public class ErrorHandler {
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handle(ValidationException e) {
+        log.warn(e.getMessage());
+
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.name())
+                .reason("")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiError handle(ForbiddenAccessException e) {
+        log.warn(e.getMessage());
+
+        return ApiError.builder()
+                .status(HttpStatus.FORBIDDEN.name())
+                .reason("Insufficient rights to proceed")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handle(NotFoundException e) {
+        log.warn(e.getMessage());
+
+        return ApiError.builder()
+                .status(HttpStatus.NOT_FOUND.name())
+                .reason("Object not found")
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handle(DataConflictException e) {
         log.warn(e.getMessage());
 
@@ -25,20 +65,14 @@ public class ErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        ex.printStackTrace(); // log full error in backend
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handle(NotFoundException e) {
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handle(SQLException e) {
         log.warn(e.getMessage());
 
         return ApiError.builder()
-                .status(HttpStatus.NOT_FOUND.name())
-                .reason("Object not found")
+                .status(HttpStatus.CONFLICT.name())
+                .reason("Data conflict")
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build();

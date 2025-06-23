@@ -58,56 +58,58 @@ public class ReviewService {
 
 
     public Review createReview(ReviewRequestDTO dto) {
-        try {
-            System.out.println("Creating review for userId=" + dto.getUserId() + ", bookId=" + dto.getBookId());
+        System.out.println("Creating review for userId=" + dto.getUserId() + ", bookId=" + dto.getBookId());
 
-            User user = userRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new NotFoundException("User not found with id: " + dto.getUserId()));
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + dto.getUserId()));
 
-            Book book = bookRepository.findById(dto.getBookId())
-                    .orElseThrow(() -> new NotFoundException("Book not found with id: " + dto.getBookId()));
+        Book book = bookRepository.findById(dto.getBookId())
+                .orElseThrow(() -> new NotFoundException("Book not found with id: " + dto.getBookId()));
 
-            Review review = new Review();
-            review.setUser(user);
-            review.setBook(book);
-            review.setComment(dto.getComment());
-            review.setRating(dto.getRating());
-            review.setCreatedAt(LocalDateTime.now());
+        Review review = new Review();
+        review.setUser(user);
+        review.setBook(book);
+        review.setComment(dto.getComment());
+        review.setRating(dto.getRating());
+        review.setCreatedAt(LocalDateTime.now());
 
-            Review saved = reviewRepository.save(review);
-            System.out.println("Saved review with id: " + saved.getId());
+        Review saved = reviewRepository.save(review);
+        System.out.println("Saved review with id: " + saved.getId());
 
-            return saved;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        return saved;
     }
 
-    public Review updateReview(Long id, ReviewRequestDTO dto, String login) {
+    public Review updateReview(Long id, ReviewRequestDTO dto, String email) {
         Review existing = reviewRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Review not found with id: " + id));
 
-        if (!existing.getUser().getLogin().equals(login)) {
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User with email = " + email + " not found."));
+
+        if (existing.getUser().getId() != currentUser.getId()) {
             throw new AccessDeniedException("You are not allowed to update this review");
         }
 
+        existing.setId(id);
         existing.setComment(dto.getComment());
         existing.setRating(dto.getRating());
         return reviewRepository.save(existing);
     }
-    public void deleteReview(Long id, String currentUserId) {
+
+    public void deleteReview(Long id, String email) {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Review not found with id: " + id));
 
-        if (!review.getUser().getLogin().equals(currentUserId)) {
-            System.out.println("Current user ID: " + currentUserId);
-            System.out.println("Review user ID: " + review.getUser().getId());
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User with email = " + email + " not found."));
+
+        if (review.getUser().getId() != currentUser.getId()) {
             throw new AccessDeniedException("You are not allowed to delete this review");
         }
 
 
         reviewRepository.delete(review);
     }
+
 
 }

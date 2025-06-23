@@ -19,7 +19,7 @@ public class Review {
     private Long id;
 
     private String comment;
-    private int rating;
+    private byte rating;
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.EAGER)

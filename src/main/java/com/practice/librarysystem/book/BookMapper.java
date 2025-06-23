@@ -7,6 +7,7 @@ import com.practice.librarysystem.book.dto.UpdateBookRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -23,6 +24,7 @@ public class BookMapper {
         bookDto.setTitle(book.getTitle());
         bookDto.setDescription(book.getDescription());
         bookDto.setImage(book.getImageSource());
+        bookDto.setViews(book.getViews());
 
         return bookDto;
     }
@@ -42,11 +44,18 @@ public class BookMapper {
         bookDto.setAvailable(book.getAvailable() > 0);
         bookDto.setAuthor(book.getAuthor().getName());
         bookDto.setImage(book.getImageSource());
+        bookDto.setViews(book.getViews());
 
         return bookDto;
     }
 
     public List<BookShortResponse> toShortDto(Page<Book> books) {
+        return books.stream()
+                .map(this::toShortDto)
+                .toList();
+    }
+
+    public List<BookShortResponse> toShortDto(Collection<Book> books) {
         return books.stream()
                 .map(this::toShortDto)
                 .toList();
@@ -61,6 +70,8 @@ public class BookMapper {
         book.setTitle(dto.getTitle());
         book.setPublicationYear(dto.getPublicationYear());
         book.setImageSource(dto.getImage());
+        book.setPopularity(0);
+        book.setViews(0);
 
 
         return book;

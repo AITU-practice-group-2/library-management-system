@@ -7,6 +7,7 @@ import com.practice.librarysystem.book.dto.UpdateBookRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -49,6 +50,12 @@ public class BookMapper {
     }
 
     public List<BookShortResponse> toShortDto(Page<Book> books) {
+        return books.stream()
+                .map(this::toShortDto)
+                .toList();
+    }
+
+    public List<BookShortResponse> toShortDto(Collection<Book> books) {
         return books.stream()
                 .map(this::toShortDto)
                 .toList();

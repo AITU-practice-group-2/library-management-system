@@ -115,17 +115,29 @@ public class BookController {
     }
 
     @GetMapping("/recommendations")
-    public List<BookShortResponse> findAllRecommended(@RequestParam(defaultValue = "0") int from,
-                                                      @RequestParam(defaultValue = "10") int size,
-                                                      HttpServletRequest httpServletRequest,
+    public List<BookShortResponse> findAllRecommended(HttpServletRequest httpServletRequest,
                                                       Principal principal) {
 
         log.info("Endpoint GET: /books/recommendations was accessed by IP:{}", getClientIp(httpServletRequest));
 
         if (principal == null) {
-
+            return List.of();
         }
 
-        return null;
+        String email = principal.getName();
+
+        return bookMapper.toShortDto(
+                bookService.findAllRecommended(email));
+    }
+
+    @GetMapping("/popular")
+    public List<BookShortResponse> findAllPopular(@RequestParam(defaultValue = "0") int from,
+                                                  @RequestParam(defaultValue = "3") int size,
+                                                  HttpServletRequest httpServletRequest) {
+
+        log.info("Endpoint GET: /books/popular was accessed by IP:{}", getClientIp(httpServletRequest));
+
+        return bookMapper.toShortDto(
+                bookService.findAllPopular(from, size));
     }
 }

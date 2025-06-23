@@ -6,6 +6,10 @@ import com.practice.librarysystem.category.Category;
 import com.practice.librarysystem.category.CategoryRepository;
 import com.practice.librarysystem.exception.ForbiddenAccessException;
 import com.practice.librarysystem.exception.NotFoundException;
+import com.practice.librarysystem.statistics.user.UserAuthor;
+import com.practice.librarysystem.statistics.user.UserAuthorRepository;
+import com.practice.librarysystem.statistics.user.UserCategory;
+import com.practice.librarysystem.statistics.user.UserCategoryRepository;
 import com.practice.librarysystem.user.Role;
 import com.practice.librarysystem.user.User;
 import com.practice.librarysystem.user.UserRepository;
@@ -17,6 +21,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 
@@ -27,6 +33,9 @@ public class BookService {
     CategoryRepository categoryRepository;
     UserRepository userRepository;
 
+    UserCategoryRepository userCategoryRepository;
+    UserAuthorRepository userAuthorRepository;
+
     public Page<Book> findAllByMultipleParams(String search, Long authorId, Long categoryId,
                                               int from, int size) {
 
@@ -36,53 +45,53 @@ public class BookService {
         if (search != null && !search.isBlank()
                 && authorId != null && categoryId != null) {
 
-            return bookRepository.findAllByTitleContainingAndAuthor_IdAndCategory_IdOrderByPopularity(
+            return bookRepository.findAllByTitleContainingAndAuthor_IdAndCategory_Id(
                     search, authorId, categoryId, pageable);
         }
 
         if (search != null && !search.isBlank()
                 && authorId == null && categoryId == null) {
 
-            return bookRepository.findAllByTitleContainingOrderByPopularity(search, pageable);
+            return bookRepository.findAllByTitleContaining(search, pageable);
         }
 
         if (authorId != null
                 && categoryId == null
                 && (search == null || search.isBlank())) {
 
-            return bookRepository.findAllByAuthor_IdOrderByPopularity(authorId, pageable);
+            return bookRepository.findAllByAuthor_Id(authorId, pageable);
         }
 
         if (categoryId != null
                 && authorId == null
                 && (search == null || search.isBlank())) {
 
-            return bookRepository.findAllByCategory_IdOrderByPopularity(categoryId, pageable);
+            return bookRepository.findAllByCategory_Id(categoryId, pageable);
         }
 
         if (search != null && !search.isBlank()
                 && authorId != null
                 && categoryId == null) {
 
-            return bookRepository.findAllByTitleContainingAndAuthor_IdOrderByPopularity(search, authorId, pageable);
+            return bookRepository.findAllByTitleContainingAndAuthor_Id(search, authorId, pageable);
         }
 
         if (search != null && !search.isBlank()
                 && categoryId != null
                 && authorId == null) {
 
-            return bookRepository.findAllByTitleContainingAndCategory_IdOrderByPopularity(search, categoryId, pageable);
+            return bookRepository.findAllByTitleContainingAndCategory_Id(search, categoryId, pageable);
         }
 
         if (authorId != null
                 && categoryId != null
                 && (search == null || search.isBlank())) {
 
-            return bookRepository.findAllByAuthor_IdAndCategory_IdOrderByPopularity(authorId, categoryId, pageable);
+            return bookRepository.findAllByAuthor_IdAndCategory_Id(authorId, categoryId, pageable);
         }
 
 
-        return bookRepository.findAllByOrderByPopularityDesc(pageable);
+        return bookRepository.findAllByOrderByPopularity(pageable);
     }
 
     public Book findById(Long id) {
@@ -167,6 +176,26 @@ public class BookService {
         }
 
         bookRepository.deleteById(id);
+    }
+
+    public List<Book> findAllRecommended(String email) {
+        User currentUser = findUserByEmailOrElseThrow(email);
+
+        UserCategory userCategory = userCategoryRepository.findFirstByUserIdOrderByPopularity(currentUser.getId())
+                .orElseThrow(() -> new NotFoundException("Statistics error"));
+
+        UserAuthor userAuthor = userAuthorRepository.findFirstByUserIdOrderByPopularity(currentUser.getId())
+                .orElseThrow(() -> new NotFoundException("Statistics error"));
+
+        return bookRepository.findTop3ByAuthor_IdOrCategory_Id(
+                userAuthor.getAuthor().getId(), userCategory.getCategory().getId());
+    }
+
+    public Page<Book> findAllPopular(int from, int size) {
+        int pageNum = from / size;
+        Pageable pageable = PageRequest.of(pageNum, size);
+
+        return bookRepository.findAllByOrderByPopularity(pageable);
     }
 
     private Book findByIdOrElseThrow(Long id) {

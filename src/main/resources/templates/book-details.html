@@ -83,8 +83,11 @@
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/authors-view}">Authors</a></li>
                         <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
+                        <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
                         <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
                     </ul>
                     <a class='menu-trigger'>
@@ -207,7 +210,7 @@
 <footer>
     <div class="container">
         <div class="col-lg-12">
-            <p>Copyright © 2025 Unemployed Backenders. All rights reserved.</p>
+            <p>Copyright © 2025 Unemployed Backends. All rights reserved.</p>
         </div>
     </div>
 </footer>
@@ -220,9 +223,6 @@
 <script src="/assets/js/counter.js"></script>
 <script src="/assets/js/custom.js"></script>
 <script>
-    let isEditing = false;
-    let editingReviewId = null;
-
     async function fetchBookDetails() {
         const path = window.location.pathname;
         const bookId = path.split('/').pop();
@@ -241,9 +241,14 @@
             document.getElementById('bookAvailable').textContent = book.available;
             document.getElementById('bookCategory').textContent = book.category;
 
+            // Set the book image
             const bookImage = document.getElementById('bookImage');
-            bookImage.src = book.image || '/assets/images/default-book-cover.jpg';
-            bookImage.alt = `Cover of ${book.title}`;
+            if (book.image) {
+                bookImage.src = book.image;
+                bookImage.alt = `Cover of ${book.title}`;
+            } else {
+                bookImage.src = '/assets/images/default-book-cover.jpg'; // fallback image
+            }
 
             document.getElementById("js-preloader").style.display = "none";
 
@@ -259,6 +264,7 @@
     async function loadReviews(bookId) {
         try {
             const currentUserId = await getCurrentUserId();
+            console.log("Current user ID:", currentUserId);
             const response = await fetch(`/reviews/book/${bookId}`);
             if (!response.ok) throw new Error("Reviews not found");
 
@@ -272,25 +278,27 @@
             }
 
             reviews.forEach(review => {
+                console.log("Full review object:", review);
+                console.log("Review user ID:", review.userId);
                 const div = document.createElement('div');
                 div.classList.add('card', 'mb-3');
 
                 let actionButtons = '';
                 if (review.userId === currentUserId) {
                     actionButtons = `
-                        <button class="btn btn-sm btn-warning me-2" onclick="editReview(${review.id}, '${review.comment}', ${review.rating})">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.id})">Delete</button>
-                    `;
+                    <button class="btn btn-sm btn-warning me-2" onclick="editReview(${review.id}, '${review.comment}', ${review.rating})">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.id})">Delete</button>
+                `;
                 }
 
                 div.innerHTML = `
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-primary">${review.userName}</h6>
-                        <p class="card-text">${review.comment}</p>
-                        <p class="card-text"><small class="text-warning">Rating: ${review.rating} / 5</small></p>
-                        ${actionButtons}
-                    </div>
-                `;
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-primary">${review.userName}</h6>
+                    <p class="card-text">${review.comment}</p>
+                    <p class="card-text"><small class="text-warning">Rating: ${review.rating} / 5</small></p>
+                    ${actionButtons}
+                </div>
+            `;
 
                 container.appendChild(div);
             });
@@ -303,18 +311,16 @@
         try {
             const response = await fetch('/users/me');
             if (!response.ok) throw new Error("User not authenticated");
-            return await response.json();
+            const userId = await response.json();
+            return userId;
         } catch (err) {
             console.error("Failed to get user ID:", err);
             alert("You must be logged in to submit a review.");
             return null;
         }
     }
-
     function editReview(id, comment, rating) {
-        isEditing = true;
-        editingReviewId = id;
-
+        // Pre-fill form for editing
         document.getElementById('reviewComment').value = comment;
         document.getElementById('reviewRating').value = rating;
 
@@ -322,6 +328,34 @@
         submitButton.textContent = "Update Review";
         submitButton.classList.remove('btn-primary');
         submitButton.classList.add('btn-success');
+
+        // Replace form submission behavior
+        const form = document.getElementById('reviewForm');
+        const oldHandler = form.onsubmit;
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+
+            const newComment = document.getElementById('reviewComment').value;
+            const newRating = parseInt(document.getElementById('reviewRating').value);
+            try {
+                const response = await fetch(`/reviews/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comment: newComment, rating: newRating })
+                });
+                if (!response.ok) throw new Error("Failed to update review");
+
+                form.onsubmit = oldHandler; // reset form handler
+                submitButton.textContent = "Submit Review";
+                submitButton.classList.remove('btn-success');
+                submitButton.classList.add('btn-primary');
+                form.reset();
+                await loadReviews(window.location.pathname.split('/').pop());
+            } catch (err) {
+                console.error('Update failed:', err);
+                alert('Failed to update review.');
+            }
+        };
     }
 
     async function deleteReview(id) {
@@ -338,13 +372,15 @@
         }
     }
 
+
+
     document.addEventListener("DOMContentLoaded", fetchBookDetails);
 
     document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const userId = await getCurrentUserId();
-        if (!userId) return;
+        if (!userId) return; // not logged in
 
         const path = window.location.pathname;
         const bookId = path.split('/').pop();
@@ -352,39 +388,26 @@
         const rating = parseInt(document.getElementById('reviewRating').value);
 
         try {
-            let response;
-            if (isEditing) {
-                response = await fetch(`/reviews/${editingReviewId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ comment, rating })
-                });
-            } else {
-                response = await fetch(`/reviews`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, bookId, comment, rating })
-                });
-            }
+            const response = await fetch(`/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, bookId, comment, rating })
+            });
 
             if (!response.ok) throw new Error("Failed to submit review");
 
-            // Reset form
-            document.getElementById('reviewForm').reset();
-            const submitButton = document.querySelector('#reviewForm button');
-            submitButton.textContent = "Submit Review";
-            submitButton.classList.remove('btn-success');
-            submitButton.classList.add('btn-primary');
-            isEditing = false;
-            editingReviewId = null;
+            // Clear the form
+            document.getElementById('reviewComment').value = '';
+            document.getElementById('reviewRating').value = '';
 
-            await loadReviews(bookId);
+            await loadReviews(bookId); // reload reviews
+
         } catch (err) {
             console.error('Submit failed:', err);
             alert('Failed to submit review.');
         }
     });
-</script>
 
+</script>
 </body>
 </html>

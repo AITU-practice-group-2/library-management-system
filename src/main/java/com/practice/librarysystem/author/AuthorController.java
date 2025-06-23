@@ -1,7 +1,9 @@
 package com.practice.librarysystem.author;
 
+import com.practice.librarysystem.author.dto.AuthorWithBooksRequest;
 import com.practice.librarysystem.util.RequestConstants;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,18 +28,32 @@ public class AuthorController {
         return service.createAuthor(dto);
     }
 
+    @PostMapping("/with-books")
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthorWithBooksDTO createWithBooks(@RequestBody @Valid AuthorWithBooksRequest request, HttpServletRequest httpRequest) {
+        log.info("Endpoint POST: /authors/with-books was accessed by IP: {}", RequestConstants.getClientIp(httpRequest));
+        return service.createAuthorWithBooks(request);
+    }
+
     @GetMapping("/{id}")
     public AuthorDTO get(@PathVariable Long id, HttpServletRequest request) {
         log.info("Endpoint GET: /authors/{} was accessed by IP: {}", id, RequestConstants.getClientIp(request));
         return service.getAuthorById(id);
     }
 
+    @GetMapping("/{id}/with-books")
+    public AuthorWithBooksDTO getWithBooks(@PathVariable Long id, HttpServletRequest request) {
+        log.info("Endpoint GET: /authors/{}/with-books was accessed by IP: {}", id, RequestConstants.getClientIp(request));
+        return service.getAuthorWithBooksById(id);
+    }
+
     @GetMapping
-    public List<AuthorDTO> getAll(@RequestParam(defaultValue = "0") int from,
+    public List<AuthorDTO> getAll(@RequestParam(required = false) String search,
+                                  @RequestParam(defaultValue = "0") int from,
                                   @RequestParam(defaultValue = "10") int size,
                                   HttpServletRequest request) {
         log.info("Endpoint GET: /authors was accessed by IP: {}", RequestConstants.getClientIp(request));
-        return service.getAllAuthors(from, size);
+        return service.searchAuthors(search, from, size);
     }
 
     @PutMapping("/{id}")

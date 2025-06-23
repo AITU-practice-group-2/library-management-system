@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>BookTrack - Online Library management system</title>
+    <title>BookTrack - Authors</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -57,7 +57,7 @@
                     <!-- ***** Serach Start ***** -->
                     <div class="search-input">
                         <form id="search" action="#">
-                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <input type="text" placeholder="Search authors..." id='searchText' name="searchKeyword" onkeypress="handle" />
                             <i class="fa fa-search"></i>
                         </form>
                     </div>
@@ -66,8 +66,8 @@
                     <ul class="nav">
                         <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
                         <li class="scroll-to-section"><a href="#services">Services</a></li>
-                        <li class="scroll-to-section"><a href="#" class="active">Books</a></li>
-                        <li class="scroll-to-section"><a th:href="@{/authors-view}">Authors</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
+                        <li class="scroll-to-section"><a href="#" class="active">Authors</a></li>
                         <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
                         <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
                         <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
@@ -90,45 +90,45 @@
                 <div class="owl-carousel owl-banner">
                     <div class="item item-1">
                         <div class="header-text">
-                            <span class="category">Our Courses</span>
-                            <h2>With Scholar Teachers, Everything Is Easier</h2>
-                            <p>Scholar is free CSS template designed by TemplateMo for online educational related websites. This layout is based on the famous Bootstrap v5.3.0 framework.</p>
+                            <span class="category">Our Authors</span>
+                            <h2>Discover Amazing Authors and Their Works</h2>
+                            <p>Explore our collection of talented authors and dive into their literary masterpieces. From classic literature to contemporary fiction, find your next favorite author.</p>
                             <div class="buttons">
                                 <div class="main-button">
-                                    <a href="#">Request Demo</a>
+                                    <a href="#authors">Browse Authors</a>
                                 </div>
                                 <div class="icon-button">
-                                    <a href="#"><i class="fa fa-play"></i> What's Scholar?</a>
+                                    <a href="#"><i class="fa fa-play"></i> Learn More</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="item item-2">
                         <div class="header-text">
-                            <span class="category">Best Result</span>
-                            <h2>Get the best result out of your effort</h2>
-                            <p>You are allowed to use this template for any educational or commercial purpose. You are not allowed to re-distribute the template ZIP file on any other website.</p>
+                            <span class="category">Literary Excellence</span>
+                            <h2>Authors Who Shape Our World</h2>
+                            <p>Meet the brilliant minds behind the stories that inspire, educate, and entertain. Each author brings a unique perspective and voice to the world of literature.</p>
                             <div class="buttons">
                                 <div class="main-button">
-                                    <a href="#">Request Demo</a>
+                                    <a href="#authors">Explore Authors</a>
                                 </div>
                                 <div class="icon-button">
-                                    <a href="#"><i class="fa fa-play"></i> What's the best result?</a>
+                                    <a href="#"><i class="fa fa-play"></i> Discover Stories</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="item item-3">
                         <div class="header-text">
-                            <span class="category">Online Learning</span>
-                            <h2>Online Learning helps you save the time</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporious incididunt ut labore et dolore magna aliqua suspendisse.</p>
+                            <span class="category">Reading Journey</span>
+                            <h2>Start Your Literary Adventure</h2>
+                            <p>Begin your journey through the world of literature by exploring our diverse collection of authors. From debut novelists to established literary giants.</p>
                             <div class="buttons">
                                 <div class="main-button">
-                                    <a href="#">Request Demo</a>
+                                    <a href="#authors">Start Reading</a>
                                 </div>
                                 <div class="icon-button">
-                                    <a href="#"><i class="fa fa-play"></i> What's Online Course?</a>
+                                    <a href="#"><i class="fa fa-play"></i> Find Your Author</a>
                                 </div>
                             </div>
                         </div>
@@ -139,10 +139,10 @@
     </div>
 </div>
 
-<div class="services section" id="services">
+<div class="services section" id="authors">
     <div class="container">
-        <div class="row" id="bookContainer">
-            <!-- Dynamic book cards will be inserted here -->
+        <div class="row" id="authorContainer">
+            <!-- Dynamic author cards will be inserted here -->
         </div>
 
         <div class="d-flex justify-content-center mt-4">
@@ -175,49 +175,40 @@
     const pageSize = 6;
     let currentSearch = '';
 
-
-    async function fetchBooks() {
+    async function fetchAuthors() {
         try {
-            const response = await fetch(`/books?from=${currentPage * pageSize}&size=${pageSize}&search=${encodeURIComponent(currentSearch)}`);
-            if (!response.ok) throw new Error("Failed to fetch books");
-            const books = await response.json();
+            const response = await fetch(`/authors?from=${currentPage * pageSize}&size=${pageSize}&search=${encodeURIComponent(currentSearch)}`);
+            if (!response.ok) throw new Error("Failed to fetch authors");
+            const authors = await response.json();
 
-            const container = document.getElementById('bookContainer');
+            const container = document.getElementById('authorContainer');
             container.innerHTML = '';
 
-            books.forEach(book => {
+            authors.forEach(author => {
                 container.innerHTML += `
           <div class="col-lg-4 col-md-6 mb-4">
-            <a href="/library/${book.id}" style="text-decoration: none; color: inherit;">
+            <a href="/authors-view/${author.id}" style="text-decoration: none; color: inherit;">
               <div class="service-item">
-                <div class="icon">
-                  <img src="assets/images/service-01.png" alt="Book Icon">
-                </div>
                 <div class="main-content">
-                  <h4 class="text-truncate-2">${book.title}</h4>
-                  <h6>${book.author}</h6>
-                  <p class="text-truncate-4">${book.description}</p>
+                  <h4 class="text-truncate-2">${author.name}</h4>
+                  <p class="text-truncate-4">${author.bio || 'No bio available'}</p>
                   <div class="mt-2">
-                    ${book.available
-                            ? `<div class="badge bg-success text-white rounded-pill px-3 py-1">Available</div>`
-                            : `<div class="badge bg-danger text-white rounded-pill px-3 py-1">Unavailable</div>`}
-                    </div>
+                    <div class="badge bg-info text-white rounded-pill px-3 py-1">Author</div>
+                  </div>
                 </div>
               </div>
             </a>
           </div>
 `;
-
-
             });
 
             document.getElementById('prevBtn').disabled = currentPage === 0;
-            document.getElementById('nextBtn').disabled = books.length < pageSize;
+            document.getElementById('nextBtn').disabled = authors.length < pageSize;
 
         } catch (err) {
             console.error(err);
-            const container = document.getElementById('bookContainer');
-            container.innerHTML = `<p class="text-danger">Failed to load books.</p>`;
+            const container = document.getElementById('authorContainer');
+            container.innerHTML = `<p class="text-danger">Failed to load authors.</p>`;
         } finally {
             const preloader = document.getElementById("js-preloader");
             if (preloader) preloader.style.display = "none";
@@ -227,16 +218,16 @@
     document.getElementById('prevBtn').addEventListener('click', () => {
         if (currentPage > 0) {
             currentPage--;
-            fetchBooks();
+            fetchAuthors();
         }
     });
 
     document.getElementById('nextBtn').addEventListener('click', () => {
         currentPage++;
-        fetchBooks();
+        fetchAuthors();
     });
 
-    document.addEventListener("DOMContentLoaded", fetchBooks);
+    document.addEventListener("DOMContentLoaded", fetchAuthors);
 
     document.getElementById("search").addEventListener("submit", function (e) {
         e.preventDefault();
@@ -247,11 +238,10 @@
         const input = document.getElementById("searchText");
         currentSearch = input.value.trim();
         currentPage = 0;
-        fetchBooks();
+        fetchAuthors();
     }
 
 </script>
 
-
 </body>
-</html>
+</html> 

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <title>BookTrack - Author Details</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="/assets/css/templatemo-scholar.css">
+    <link rel="stylesheet" href="/assets/css/owl.css">
+    <link rel="stylesheet" href="/assets/css/animate.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+    <!--
+
+
+    TemplateMo 586 Scholar
+
+    https://templatemo.com/tm-586-scholar
+
+    -->
+
+    <style>
+        .text-truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .text-truncate-4 {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- ***** Preloader Start ***** -->
+<div id="js-preloader" class="js-preloader">
+    <div class="preloader-inner">
+        <span class="dot"></span>
+        <div class="dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+<!-- ***** Preloader End ***** -->
+
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/}" class="logo">
+                        <h1>BookTrack</h1>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Serach Start ***** -->
+                    <div class="search-input">
+                        <form id="search" action="#">
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <i class="fa fa-search"></i>
+                        </form>
+                    </div>
+                    <!-- ***** Serach Start ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/authors-view}" class="active">Authors</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
+                        <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<div class="main-banner" id="top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="owl-carousel owl-banner">
+                    <div class="item item-1">
+                        <div class="header-text">
+                            <span class="category">Author Profile</span>
+                            <h2 id="authorNameHeader">Discover the Author</h2>
+                            <p>Explore the works and biography of this talented author. Dive into their literary world and discover the stories that have captivated readers.</p>
+                            <div class="buttons">
+                                <div class="main-button">
+                                    <a href="#authorDetails">View Details</a>
+                                </div>
+                                <div class="icon-button">
+                                    <a href="#books"><i class="fa fa-book"></i> View Books</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="services section" id="authorDetails">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 mb-4">
+                <div class="service-item">
+                    <div class="row">
+                        <!-- Author Details Column -->
+                        <div class="col-md-12">
+                            <div class="main-content">
+                                <h4 id="authorName" class="text-truncate-2"></h4>
+                                <div class="mt-3">
+                                    <p><strong>Biography:</strong></p>
+                                    <p id="authorBio" class="text-truncate-4"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="services section" id="books">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-heading">
+                    <h2>Books by <span id="authorNameBooks"></span></h2>
+                    <p>Explore the literary works of this talented author</p>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="booksContainer">
+            <!-- Dynamic book cards will be inserted here -->
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="col-lg-12">
+            <p>Copyright © 2025 Unemployed Backenders. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/js/isotope.min.js"></script>
+<script src="/assets/js/owl-carousel.js"></script>
+<script src="/assets/js/counter.js"></script>
+<script src="/assets/js/custom.js"></script>
+
+<script>
+    async function fetchAuthorDetails() {
+        const path = window.location.pathname;
+        const authorId = path.split('/').pop();
+
+        try {
+            const response = await fetch(`/authors/${authorId}/with-books`);
+            if (!response.ok) throw new Error("Author not found");
+
+            const author = await response.json();
+
+            // Update author information
+            document.getElementById('authorName').textContent = author.name;
+            document.getElementById('authorNameHeader').textContent = author.name;
+            document.getElementById('authorNameBooks').textContent = author.name;
+            document.getElementById('authorBio').textContent = author.bio || 'No biography available';
+
+            // Update books section
+            const booksContainer = document.getElementById('booksContainer');
+            booksContainer.innerHTML = '';
+
+            if (author.books && author.books.length > 0) {
+                author.books.forEach(book => {
+                    booksContainer.innerHTML += `
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <a href="/library/${book.id}" style="text-decoration: none; color: inherit;">
+                                <div class="service-item">
+                                    <div class="icon">
+                                        <img src="${book.image || 'assets/images/service-01.png'}" alt="Book Icon">
+                                    </div>
+                                    <div class="main-content">
+                                        <h4 class="text-truncate-2">${book.title}</h4>
+                                        <p class="text-truncate-4">${book.description}</p>
+                                        <div class="mt-2">
+                                            ${book.available
+                                                ? `<div class="badge bg-success text-white rounded-pill px-3 py-1">Available</div>`
+                                                : `<div class="badge bg-danger text-white rounded-pill px-3 py-1">Unavailable</div>`}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    `;
+                });
+            } else {
+                booksContainer.innerHTML = `
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No books found for this author.</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById("js-preloader").style.display = "none";
+
+        } catch (err) {
+            console.error(err);
+            document.querySelector(".services .container").innerHTML =
+                `<p class="text-danger text-center mt-5">Failed to load author details.</p>`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchAuthorDetails);
+</script>
+
+</body>
+</html> 

@@ -41,7 +41,7 @@ public class Book {
     @Column(name = "image_src")
     String imageSource;
 
-    Integer popularity;
+    int popularity;
 
     Integer views;
 

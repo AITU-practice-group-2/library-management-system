@@ -91,7 +91,7 @@ public class BookService {
         }
 
 
-        return bookRepository.findAllByOrderByPopularity(pageable);
+        return bookRepository.findAll(pageable);
     }
 
     public Book findById(Long id) {
@@ -187,15 +187,15 @@ public class BookService {
         UserAuthor userAuthor = userAuthorRepository.findFirstByUserIdOrderByPopularity(currentUser.getId())
                 .orElseThrow(() -> new NotFoundException("Statistics error"));
 
-        return bookRepository.findTop3ByAuthor_IdOrCategory_Id(
-                userAuthor.getAuthor().getId(), userCategory.getCategory().getId());
+        return bookRepository.findTop3ByAuthor_IdAndAvailableGreaterThanOrCategory_IdAndAvailableGreaterThan(
+                userAuthor.getAuthor().getId(), 0, userCategory.getCategory().getId(), 0);
     }
 
     public Page<Book> findAllPopular(int from, int size) {
         int pageNum = from / size;
         Pageable pageable = PageRequest.of(pageNum, size);
 
-        return bookRepository.findAllByOrderByPopularity(pageable);
+        return bookRepository.findAllByAvailableGreaterThanOrderByPopularity(0, pageable);
     }
 
     private Book findByIdOrElseThrow(Long id) {

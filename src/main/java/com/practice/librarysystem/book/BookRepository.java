@@ -22,7 +22,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Page<Book> findAllByTitleContainingAndAuthor_IdAndCategory_Id(String search, Long authorId, Long categoryId, Pageable pageable);
 
-    Page<Book> findAllByOrderByPopularity(Pageable pageable);
+    Page<Book> findAllByAvailableGreaterThanOrderByPopularity(int AvailableNum, Pageable pageable);
 
-    List<Book> findTop3ByAuthor_IdOrCategory_Id(Long authorId, Long categoryId);
+    List<Book> findTop3ByAuthor_IdAndAvailableGreaterThanOrCategory_IdAndAvailableGreaterThan(Long authorId, int availableNum1, Long categoryId, int availableNum2);
 }

@@ -43,9 +43,8 @@ public class BookController {
         String ip = getClientIp(httpServletRequest);
         log.info("Endpoint GET: /books was accessed by IP:{}", ip);
 
-        Page<Book> result = bookService.findAllByMultipleParams(search, author, category, from, size);
 
-        statisticsService.addViewToBook(result, ip);
+        Page<Book> result = bookService.findAllByMultipleParams(search, author, category, from, size);
 
         return bookMapper.toShortDto(result);
     }

@@ -1,16 +1,22 @@
 package com.practice.librarysystem.review;
 
+import com.practice.librarysystem.statistics.book.BookStatisticsService;
 import com.practice.librarysystem.util.RequestConstants;
 import jakarta.validation.Valid;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 
 @Slf4j
 @RestController
@@ -20,10 +26,8 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
 
-    public ReviewController(ReviewService reviewService, ReviewMapper reviewMapper) {
-        this.reviewService = reviewService;
-        this.reviewMapper = reviewMapper;
-    }
+    BookStatisticsService bookStatisticsService;
+    private final Byte[] rateConstants = {-30, -15, -5, 5, 20};
 
     @GetMapping
     public List<ReviewResponseDTO> getAll(@RequestParam(defaultValue = "0") int from,
@@ -38,23 +42,30 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReviewResponseDTO> getOne(@PathVariable Long id,
+    public ReviewResponseDTO getOne(@PathVariable Long id,
                                                     HttpServletRequest httpServletRequest) {
         String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint GET: /reviews/{} was accessed by IP:{}", id, ip);
 
         Review review = reviewService.getReview(id);
-        return ResponseEntity.ok(reviewMapper.toDTO(review));
+        return reviewMapper.toDTO(review);
     }
 
     @PostMapping
-    public ResponseEntity<ReviewResponseDTO> createReview(@RequestBody @Valid ReviewRequestDTO dto,
-                                                          HttpServletRequest httpServletRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReviewResponseDTO createReview(@RequestBody @Valid ReviewRequestDTO dto,
+                                          HttpServletRequest httpServletRequest,
+                                          Principal principal) {
         String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint POST: /reviews was accessed by IP:{}", ip);
 
         Review review = reviewService.createReview(dto);
-        return ResponseEntity.ok(reviewMapper.toDTO(review));
+
+        String email = principal.getName();
+        int rating = review.getRating();
+        bookStatisticsService.addPopularityToBook(rateConstants[rating - 1], review.getBook(), email);
+
+        return reviewMapper.toDTO(review);
     }
 
     @GetMapping("/book/{bookId}")
@@ -67,15 +78,20 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewResponseDTO> update(@PathVariable Long id,
-                                                    @RequestBody ReviewRequestDTO dto,
-                                                    Principal principal,
-                                                    HttpServletRequest httpServletRequest) {
+    public ReviewResponseDTO update(@PathVariable Long id,
+                                    @RequestBody ReviewRequestDTO dto,
+                                    Principal principal,
+                                    HttpServletRequest httpServletRequest) {
         String ip = RequestConstants.getClientIp(httpServletRequest);
-        log.info("Endpoint PUT: /reviews/{} was accessed by IP:{} by user:{}", id, ip, principal.getName());
+        String email = principal.getName();
+        log.info("Endpoint PUT: /reviews/{} was accessed by IP:{} by user:{}", id, ip, email);
 
-        Review updatedReview = reviewService.updateReview(id, dto, principal.getName());
-        return ResponseEntity.ok(reviewMapper.toDTO(updatedReview));
+        Review updatedReview = reviewService.updateReview(id, dto, email);
+
+        int rating = updatedReview.getRating();
+        bookStatisticsService.addPopularityToBook(rateConstants[rating] - 1, updatedReview.getBook(), email);
+
+        return reviewMapper.toDTO(updatedReview);
     }
 
     @DeleteMapping("/{id}")

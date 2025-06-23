@@ -4,6 +4,7 @@ import com.practice.librarysystem.book.dto.BookFullResponse;
 import com.practice.librarysystem.book.dto.BookShortResponse;
 import com.practice.librarysystem.book.dto.NewBookRequest;
 import com.practice.librarysystem.book.dto.UpdateBookRequest;
+import com.practice.librarysystem.statistics.book.BookStatisticsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -51,13 +52,15 @@ public class BookController {
 
     @GetMapping("/{id}")
     public BookFullResponse findById(@PathVariable Long id,
-                                     HttpServletRequest httpServletRequest) {
+                                     HttpServletRequest httpServletRequest,
+                                     Principal principal) {
         String ip = getClientIp(httpServletRequest);
         log.info("Endpoint GET: /books/{} was accessed by IP:{}", id, ip);
 
         Book result = bookService.findById(id);
+        String email = principal.getName();
 
-        statisticsService.addViewToBook(result, ip);
+        statisticsService.addViewToBook(result, ip, email);
 
         return bookMapper.toDto(result);
     }

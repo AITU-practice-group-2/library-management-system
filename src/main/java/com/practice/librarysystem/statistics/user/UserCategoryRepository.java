@@ -1,4 +1,4 @@
-package com.practice.librarysystem.user.statistics;
+package com.practice.librarysystem.statistics.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

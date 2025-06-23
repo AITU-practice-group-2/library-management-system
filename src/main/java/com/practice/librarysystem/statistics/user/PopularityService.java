@@ -1,11 +1,15 @@
-package com.practice.librarysystem.user.statistics;
+package com.practice.librarysystem.statistics.user;
 
 import com.practice.librarysystem.author.Author;
 import com.practice.librarysystem.category.Category;
 import com.practice.librarysystem.exception.NotFoundException;
 import com.practice.librarysystem.user.User;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 
 @Service
 @RequiredArgsConstructor

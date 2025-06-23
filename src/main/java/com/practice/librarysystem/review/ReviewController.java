@@ -89,7 +89,7 @@ public class ReviewController {
         Review updatedReview = reviewService.updateReview(id, dto, email);
 
         int rating = updatedReview.getRating();
-        bookStatisticsService.addPopularityToBook(rateConstants[rating] - 1, updatedReview.getBook(), email);
+        bookStatisticsService.addPopularityToBook(rateConstants[rating - 1], updatedReview.getBook(), email);
 
         return reviewMapper.toDTO(updatedReview);
     }

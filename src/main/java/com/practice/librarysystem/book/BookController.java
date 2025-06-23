@@ -113,4 +113,19 @@ public class BookController {
 
         bookService.deleteById(id, email);
     }
+
+    @GetMapping("/recommendations")
+    public List<BookShortResponse> findAllRecommended(@RequestParam(defaultValue = "0") int from,
+                                                      @RequestParam(defaultValue = "10") int size,
+                                                      HttpServletRequest httpServletRequest,
+                                                      Principal principal) {
+
+        log.info("Endpoint GET: /books/recommendations was accessed by IP:{}", getClientIp(httpServletRequest));
+
+        if (principal == null) {
+
+        }
+
+        return null;
+    }
 }

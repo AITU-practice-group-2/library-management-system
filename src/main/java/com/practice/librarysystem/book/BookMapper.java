@@ -1,6 +1,7 @@
 package com.practice.librarysystem.book;
 
-import com.practice.librarysystem.book.dto.BookResponse;
+import com.practice.librarysystem.book.dto.BookFullResponse;
+import com.practice.librarysystem.book.dto.BookShortResponse;
 import com.practice.librarysystem.book.dto.NewBookRequest;
 import com.practice.librarysystem.book.dto.UpdateBookRequest;
 import org.springframework.data.domain.Page;
@@ -10,8 +11,8 @@ import java.util.List;
 
 @Component
 public class BookMapper {
-    public BookResponse toDto(Book book) {
-        BookResponse bookDto = new BookResponse();
+    public BookFullResponse toDto(Book book) {
+        BookFullResponse bookDto = new BookFullResponse();
 
         bookDto.setId(book.getId());
         bookDto.setAuthor(book.getAuthor().getName());
@@ -21,13 +22,35 @@ public class BookMapper {
         bookDto.setPublicationYear(book.getPublicationYear());
         bookDto.setTitle(book.getTitle());
         bookDto.setDescription(book.getDescription());
+        bookDto.setImage(book.getImageSource());
+        bookDto.setViews(book.getViews());
 
         return bookDto;
     }
 
-    public List<BookResponse> toDto(Page<Book> books) {
+    public List<BookFullResponse> toDto(Page<Book> books) {
         return books.stream()
                 .map(this::toDto)
+                .toList();
+    }
+
+    public BookShortResponse toShortDto(Book book) {
+        BookShortResponse bookDto = new BookShortResponse();
+
+        bookDto.setId(book.getId());
+        bookDto.setTitle(book.getTitle());
+        bookDto.setDescription(book.getDescription());
+        bookDto.setAvailable(book.getAvailable() > 0);
+        bookDto.setAuthor(book.getAuthor().getName());
+        bookDto.setImage(book.getImageSource());
+        bookDto.setViews(book.getViews());
+
+        return bookDto;
+    }
+
+    public List<BookShortResponse> toShortDto(Page<Book> books) {
+        return books.stream()
+                .map(this::toShortDto)
                 .toList();
     }
 
@@ -39,6 +62,9 @@ public class BookMapper {
         book.setDescription(dto.getDescription());
         book.setTitle(dto.getTitle());
         book.setPublicationYear(dto.getPublicationYear());
+        book.setImageSource(dto.getImage());
+        book.setPopularity(0);
+        book.setViews(0);
 
 
         return book;
@@ -52,7 +78,7 @@ public class BookMapper {
         book.setDescription(dto.getDescription());
         book.setTitle(dto.getTitle());
         book.setPublicationYear(dto.getPublicationYear());
-
+        book.setImageSource(dto.getImage());
 
         return book;
     }

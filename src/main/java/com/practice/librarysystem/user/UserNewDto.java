@@ -15,7 +15,7 @@ public class UserNewDto {
     @Size(min = 5, max = 100, message = "Login has to contain 5-100 words.")
     @NotBlank(message = "Login cannot be empty.")
     String login;
-    @Size(min = 5, max = 50, message = "Password has to contain 5-50 words.")
+    @Size(min = 5, max = 255, message = "Password has to contain 5-50 words.")
     @NotBlank(message = "Password cannot be empty.")
     String password;
     @Size(min = 5, max = 100, message = "Email has to contain 5-100 words.")

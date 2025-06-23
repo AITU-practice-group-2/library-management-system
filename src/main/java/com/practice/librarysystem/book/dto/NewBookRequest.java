@@ -1,9 +1,6 @@
 package com.practice.librarysystem.book.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -18,6 +15,7 @@ public class NewBookRequest {
     String description;
 
     @NotNull
+    @Max(2027)
     Integer publicationYear;
 
     @NotNull
@@ -33,4 +31,6 @@ public class NewBookRequest {
 
     @NotNull
     Long category;
+
+    String image;
 }

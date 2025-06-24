@@ -49,11 +49,7 @@ public class BookStatisticsService {
             book.setViews(
                     book.getViews() + 1);
 
-            log.warn("book:{} has popularity:{}", book.getId(), book.getPopularity());
-
             book.setPopularity(book.getPopularity() + 1);
-
-            log.warn("book:{} has popularity:{}", book.getId(), book.getPopularity());
 
             popularityService.addAuthorPopularity(1, currentUser, book.getAuthor());
             popularityService.addCategoryPopularity(1, currentUser, book.getCategory());

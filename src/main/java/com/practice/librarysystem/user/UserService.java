@@ -1,5 +1,6 @@
 package com.practice.librarysystem.user;
 
+import com.practice.librarysystem.exception.DataConflictException;
 import com.practice.librarysystem.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,8 @@ public class UserService {
             user.setRole(Role.GUEST);
         } else if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
             user.setRole(Role.ADMIN);
+        } else if (newUser.getRole().equalsIgnoreCase("EDITOR")) {
+            user.setRole(Role.EDITOR);
         } else {
             user.setRole(Role.GUEST);
         }
@@ -46,18 +49,24 @@ public class UserService {
 
     public User update(Long id, UserNewDto newUser) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found."));
-        if (newUser.getEmail() != null) {
-            user.setEmail(user.getEmail());
+
+        if (userRepository.findByEmail(newUser.getEmail()).isPresent() && !newUser.getEmail().equals(user.getEmail())) {
+            throw new DataConflictException("The user with this email already exists.");
         }
-        if (newUser.getLogin() != null) {
-            user.setLogin(user.getLogin());
+        if (newUser.getEmail() != null && !newUser.getEmail().equals(user.getEmail())) {
+            user.setEmail(newUser.getEmail());
         }
-        if (newUser.getPassword() != null) {
-            user.setPassword(user.getPassword());
+        if (newUser.getLogin() != null && !newUser.getLogin().equals(user.getLogin())) {
+            user.setLogin(newUser.getLogin());
+        }
+        if (newUser.getPassword() != null && !newUser.getPassword().equals(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         }
         if (newUser.getRole() != null) {
             if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
                 user.setRole(Role.ADMIN);
+            } else if (newUser.getRole().equalsIgnoreCase("EDITOR")) {
+                user.setRole(Role.EDITOR);
             } else {
                 user.setRole(Role.GUEST);
             }

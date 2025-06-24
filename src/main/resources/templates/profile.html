@@ -1,26 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
     <title>BookTrack - Online Library management system</title>
-
-    <!-- Bootstrap core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-
-    <!-- Additional CSS Files -->
     <link rel="stylesheet" href="/assets/css/fontawesome.css">
     <link rel="stylesheet" href="/assets/css/templatemo-scholar.css">
     <link rel="stylesheet" href="/assets/css/owl.css">
     <link rel="stylesheet" href="/assets/css/animate.css">
-    <link rel="stylesheet"href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
 </head>
 <body>
-<!-- ***** Preloader Start ***** -->
 <div id="js-preloader" class="js-preloader">
     <div class="preloader-inner">
         <span class="dot"></span>
@@ -36,14 +28,38 @@
     <div class="container">
         <main>
             <h2>Account Details</h2>
-            <div th:if="${user != null}">
-                <p><strong>Login:</strong> <span th:text="${user.login}">[login]</span></p>
-                <p><strong>Email:</strong> <span th:text="${user.email}">[email]</span></p>
-                <p><strong>Password:</strong> ********</p>
+            <div th:if="${user != null}" th:data-user-id="${user.id}" id="userProfileData">
+                <div id="viewMode">
+                    <p><strong>Login:</strong> <span th:text="${user.login}" id="loginDisplay">[login]</span></p>
+                    <p><strong>Email:</strong> <span th:text="${user.email}" id="emailDisplay">[email]</span></p>
+                    <p><strong>Role:</strong> <span th:text="${user.role.toString()}" id="roleDisplay">[role]</span></p>
+                    <p><strong>Password:</strong> ********</p>
+                    <button id="editBtn" class="btn btn-primary">Edit</button>
+                    <form th:action="@{/logout}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary">Logout</button>
+                    </form>
+                </div>
 
-                <form th:action="@{/logout}" method="post">
-                    <button type="submit">Logout</button>
-                </form>
+                <div id="editMode" style="display:none;">
+                    <div class="form-group">
+                        <label for="loginInput">Login:</label>
+                        <input type="text" id="loginInput" class="form-control" th:value="${user.login}">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailInput">Email:</label>
+                        <input type="email" id="emailInput" class="form-control" th:value="${user.email}">
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordInput">Password:</label>
+                        <input type="password" id="passwordInput" class="form-control" placeholder="Enter new password">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="editorCheckbox" class="form-check-input" th:checked="${user.role.toString() == 'EDITOR'}">
+                        <label for="editorCheckbox" class="form-check-label">I'm editor</label>
+                    </div>
+                    <button id="saveBtn" class="btn btn-success">Save</button>
+                    <button id="cancelBtn" class="btn btn-warning">Cancel</button>
+                </div>
             </div>
 
             <div th:if="${user == null}">
@@ -52,26 +68,19 @@
         </main>
     </div>
 </div>
-<!-- ***** Preloader End ***** -->
+
 <header class="header-area header-sticky">
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
-                    <a th:href="@{/}" class="logo">
-                        <h1>BookTrack</h1>
-                    </a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Serach Start ***** -->
+                    <a th:href="@{/}" class="logo"><h1>BookTrack</h1></a>
                     <div class="search-input">
                         <form id="search" action="#">
                             <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
                             <i class="fa fa-search"></i>
                         </form>
                     </div>
-                    <!-- ***** Serach Start ***** -->
-                    <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
                         <li class="scroll-to-section"><a href="#services">Services</a></li>
@@ -80,15 +89,13 @@
                         <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
                         <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
                     </ul>
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
+                    <a class='menu-trigger'><span>Menu</span></a>
                 </nav>
             </div>
         </div>
     </div>
 </header>
+
 <footer>
     <div class="container">
         <div class="col-lg-12">
@@ -96,6 +103,64 @@
         </div>
     </div>
 </footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("editBtn").addEventListener("click", function() {
+            document.getElementById("viewMode").style.display = "none";
+            document.getElementById("editMode").style.display = "block";
+        });
+
+        document.getElementById("cancelBtn").addEventListener("click", function() {
+            document.getElementById("editMode").style.display = "none";
+            document.getElementById("viewMode").style.display = "block";
+        });
+
+        document.getElementById("saveBtn").addEventListener("click", async function() {
+            console.log("Save button clicked");
+            const login = document.getElementById("loginInput").value;
+            const email = document.getElementById("emailInput").value;
+            const password = document.getElementById("passwordInput").value;
+            const isEditor = document.getElementById("editorCheckbox").checked;
+
+            const role = isEditor ? "EDITOR" : "GUEST";
+            const userId = document.getElementById("userProfileData").dataset.userId;
+
+            try {
+                const response = await fetch(`/users/${userId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        login: login,
+                        email: email,
+                        password: password,
+                        role: role
+                    })
+                });
+
+                console.log("Fetch response status:", response.status);
+
+                if (response.ok) {
+                    const updatedUser = await response.json();
+                    document.getElementById("loginDisplay").textContent = updatedUser.login;
+                    document.getElementById("emailDisplay").textContent = updatedUser.email;
+                    document.getElementById("roleDisplay").textContent = updatedUser.role;
+
+                    document.getElementById("editMode").style.display = "none";
+                    document.getElementById("viewMode").style.display = "block";
+                    alert("Profile updated successfully!");
+                } else {
+                    const errorData = await response.json();
+                    alert("Update failed: " + (errorData.message || response.statusText));
+                }
+            } catch (err) {
+                console.error("Request failed", err);
+                alert("An error occurred: " + err.message);
+            }
+        });
+    });
+</script>
+
 <script src="/vendor/jquery/jquery.min.js"></script>
 <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="/assets/js/isotope.min.js"></script>

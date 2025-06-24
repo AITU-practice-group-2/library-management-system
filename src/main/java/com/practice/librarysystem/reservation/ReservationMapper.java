@@ -25,6 +25,8 @@ public class ReservationMapper {
         dto.setReserverId(reservation.getReserver().getId());
         dto.setBookId(reservation.getBook().getId());
         dto.setOverdue(reservation.isOverdue());
+        dto.setReserverName(reservation.getReserver().getEmail());
+        dto.setBookTitle(reservation.getBook().getTitle());
 
         return dto;
     }

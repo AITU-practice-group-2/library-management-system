@@ -19,10 +19,10 @@ public class Review {
     private Long id;
 
     private String comment;
-    private byte rating;
+    private int rating;
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "reviewer_id", nullable = false)  // FIXED
     private User user;
 

@@ -7,9 +7,8 @@ import lombok.Data;
 public class ReviewResponseDTO {
     private Long id;
     private String comment;
-    private byte rating;
+    private int rating;
     private String bookTitle;
     private String userName;
-    private Long userId;
     private LocalDateTime createdAt;
 }

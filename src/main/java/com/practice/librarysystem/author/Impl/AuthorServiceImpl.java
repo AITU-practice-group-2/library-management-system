@@ -6,8 +6,6 @@ import com.practice.librarysystem.author.AuthorMapper;
 import com.practice.librarysystem.author.AuthorRepository;
 import com.practice.librarysystem.author.AuthorService;
 import com.practice.librarysystem.exception.NotFoundException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,12 +34,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorDTO> getAllAuthors(int from, int size) {
-        int pageNumber = from / size;
-
-        Pageable pageable = PageRequest.of(pageNumber, size);
-
-        return repository.findAll(pageable).stream()
+    public List<AuthorDTO> getAllAuthors() {
+        return repository.findAll().stream()
                 .map(AuthorMapper::toDTO)
                 .collect(Collectors.toList());
     }

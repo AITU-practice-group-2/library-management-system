@@ -2,14 +2,9 @@ package com.practice.librarysystem.book;
 
 import com.practice.librarysystem.author.Author;
 import com.practice.librarysystem.category.Category;
-import com.practice.librarysystem.reservation.Reservation;
-import com.practice.librarysystem.review.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -37,17 +32,4 @@ public class Book {
 
     @ManyToOne
     Category category;
-
-    @Column(name = "image_src")
-    String imageSource;
-
-    Integer popularity;
-
-    Integer views;
-
-    @OneToMany(mappedBy = "book")
-    final List<Reservation> reservations = new ArrayList<>();
-
-    @OneToMany(mappedBy = "book")
-    final List<Review> reviews = new ArrayList<>();
 }

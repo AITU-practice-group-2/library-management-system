@@ -16,5 +16,5 @@ public class ReviewRequestDTO {
 
     private String comment;
 
-    private byte rating;
+    private int rating;
 }

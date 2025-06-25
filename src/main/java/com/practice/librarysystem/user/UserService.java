@@ -4,7 +4,6 @@ import com.practice.librarysystem.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,16 +12,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public User create(UserNewDto newUser) {
         User user = new User();
         user.setEmail(newUser.getEmail());
         user.setLogin(newUser.getLogin());
-        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        if (newUser.getRole() == null) {
-            user.setRole(Role.GUEST);
-        } else if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
+        user.setPassword(newUser.getPassword());
+        if (newUser.getRole().equalsIgnoreCase("ADMIN")) {
             user.setRole(Role.ADMIN);
         } else {
             user.setRole(Role.GUEST);
@@ -34,10 +30,6 @@ public class UserService {
     public List<User> findAll(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         return userRepository.findAll(pageable).getContent();
-    }
-
-    public User findByLogin(String login) {
-        return userRepository.findByLogin(login).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User findById(Long id) {
@@ -68,9 +60,5 @@ public class UserService {
 
     public void delete(Long id) {
         userRepository.deleteById(id);
-    }
-
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User with email = " + email + " not found."));
     }
 }

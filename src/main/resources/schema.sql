@@ -18,19 +18,17 @@ CREATE TABLE IF NOT EXISTS books (
     pages INT NOT NULL,
     available INT NOT NULL,
     author_id INT REFERENCES authors NOT NULL,
-    category_id INT REFERENCES categories NOT NULL,
-    image_src VARCHAR(1000),
-    popularity INT NOT NULL,
-    views INT NOT NULL
+    category_id INT REFERENCES categories NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     login VARCHAR(100) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     role VARCHAR(50) NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS reservations (
     id SERIAL PRIMARY KEY,
@@ -49,20 +47,5 @@ CREATE TABLE IF NOT EXISTS reviews (
     rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     reviewer_id INT REFERENCES users NOT NULL,
-    book_id INT REFERENCES books NOT NULL,
-    UNIQUE (reviewer_id, book_id)
-);
-
-CREATE TABLE IF NOT EXISTS users_authors (
-    user_id int references users(id),
-    author_id int references authors(id),
-    primary key (user_id, author_id),
-    popularity int
-);
-
-CREATE TABLE IF NOT EXISTS users_categories (
-    user_id int references users(id),
-    category_id int references categories(id),
-    primary key (user_id, category_id),
-    popularity int
+    book_id INT REFERENCES books NOT NULL
 );

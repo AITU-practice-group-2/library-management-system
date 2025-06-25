@@ -101,7 +101,8 @@ public class BookService {
     public Book createNew(Book book, Long authorId, Long categoryId, String requesterEmail) {
         User user = findUserByEmailOrElseThrow(requesterEmail);
 
-        if (user.getRole() != Role.ADMIN) {
+        if (user.getRole() != Role.ADMIN
+                && user.getRole() != Role.EDITOR) {
             throw new ForbiddenAccessException(
                     String.format("Book creating failed for user %d", user.getId()));
         }
@@ -124,7 +125,8 @@ public class BookService {
 
         User user = findUserByEmailOrElseThrow(requesterEmail);
 
-        if (user.getRole() != Role.ADMIN) {
+        if (user.getRole() != Role.ADMIN
+                && user.getRole() != Role.EDITOR) {
             throw new ForbiddenAccessException(
                     String.format("Book creating failed for user %d", user.getId()));
         }
@@ -170,7 +172,8 @@ public class BookService {
 
         User user = findUserByEmailOrElseThrow(requesterEmail);
 
-        if (user.getRole() != Role.ADMIN) {
+        if (user.getRole() != Role.ADMIN
+                && user.getRole() != Role.EDITOR) {
             throw new ForbiddenAccessException(
                     String.format("Book creating failed for user %d", user.getId()));
         }

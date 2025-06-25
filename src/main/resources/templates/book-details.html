@@ -256,13 +256,29 @@
         }
     }
 
+    async function checkIfAdmin() {
+        try {
+            const response = await fetch('/users/role');
+            if (!response.ok) return false;
+            const role = await response.text();
+            console.log("Role from backend:", role);
+            return role === 'ADMIN';
+        } catch (err) {
+            console.error("Failed to check role:", err);
+            return false;
+        }
+    }
+
+
     async function loadReviews(bookId) {
         try {
             const currentUserId = await getCurrentUserId();
+            const isAdmin      = await checkIfAdmin();
+
             const response = await fetch(`/reviews/book/${bookId}`);
             if (!response.ok) throw new Error("Reviews not found");
 
-            const reviews = await response.json();
+            const reviews   = await response.json();
             const container = document.getElementById('reviewsList');
             container.innerHTML = '';
 
@@ -271,29 +287,41 @@
                 return;
             }
 
-            reviews.forEach(review => {
+            for (const review of reviews) {
                 const div = document.createElement('div');
                 div.classList.add('card', 'mb-3');
 
                 let actionButtons = '';
-                if (review.userId === currentUserId) {
+                if (review.userId === currentUserId || isAdmin) {      // <-- здесь isAdmin
+
+                    const editBtn = review.userId === currentUserId
+                        ? `<button class="btn btn-sm btn-warning me-2"
+                               onclick="editReview(${review.id}, '${review.comment}', ${review.rating})">
+                           Edit
+                       </button>`
+                        : '';
+
                     actionButtons = `
-                        <button class="btn btn-sm btn-warning me-2" onclick="editReview(${review.id}, '${review.comment}', ${review.rating})">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.id})">Delete</button>
-                    `;
+                    ${editBtn}
+                    <button class="btn btn-sm btn-danger"
+                            onclick="deleteReview(${review.id})">
+                        Delete
+                    </button>`;
                 }
 
                 div.innerHTML = `
-                    <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-primary">${review.userName}</h6>
-                        <p class="card-text">${review.comment}</p>
-                        <p class="card-text"><small class="text-warning">Rating: ${review.rating} / 5</small></p>
-                        ${actionButtons}
-                    </div>
-                `;
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-primary">${review.userName}</h6>
+                    <p class="card-text">${review.comment}</p>
+                    <p class="card-text"><small class="text-warning">
+                        Rating: ${review.rating} / 5
+                    </small></p>
+                    ${actionButtons}
+                </div>`;
 
                 container.appendChild(div);
-            });
+            }
+
         } catch (err) {
             console.error('Error loading reviews:', err);
         }

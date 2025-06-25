@@ -72,4 +72,15 @@ public class UserController {
         User user = userService.findByEmail(email);
         return ResponseEntity.ok(user.getId());
     }
+    @GetMapping("/role")
+    public ResponseEntity<String> getCurrentUserRole(Principal principal,
+                                                     HttpServletRequest httpServletRequest) {
+        String ip = RequestConstants.getClientIp(httpServletRequest);
+        log.info("Endpoint GET: /users/role was accessed by IP:{} by user:{}", ip, principal.getName());
+
+        User user = userService.findByEmail(principal.getName());
+
+        return ResponseEntity.ok(user.getRole().name());
+    }
+
 }

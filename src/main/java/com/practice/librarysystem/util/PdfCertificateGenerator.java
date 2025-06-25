@@ -1,13 +1,18 @@
 package com.practice.librarysystem.util;
 
+import com.google.zxing.*;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PdfCertificateGenerator {
 
@@ -60,10 +65,21 @@ public class PdfCertificateGenerator {
 
         document.add(table);
 
+        // Generate QR code (text can be customized — example below)
+        String qrText = String.format("Reservation Certificate%nUser ID: %d%nBook ID: %d%nIssued At: %s",
+                userId, bookId, timestamp);
+        Image qrImage = generateQrCodeImage(qrText, 150, 150);
+
+        // Center and add QR code
+        qrImage.setAlignment(Element.ALIGN_CENTER);
+        qrImage.setSpacingBefore(30);
+        document.add(qrImage);
+
         // Footer Status
-        Paragraph status = new Paragraph("✔ Reservation Confirmed", new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, darkGreen));
+        Paragraph status = new Paragraph("✔ Reservation Confirmed",
+                new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, darkGreen));
         status.setAlignment(Element.ALIGN_CENTER);
-        status.setSpacingBefore(40);
+        status.setSpacingBefore(20);
         document.add(status);
 
         document.close();
@@ -76,5 +92,26 @@ public class PdfCertificateGenerator {
         cell.setPadding(10);
         cell.setBorder(Rectangle.NO_BORDER);
         return cell;
+    }
+
+    private static Image generateQrCodeImage(String text, int width, int height) throws Exception {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        Map<EncodeHintType, Object> hints = new HashMap<>();
+        hints.put(EncodeHintType.MARGIN, 1);
+
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
+
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                bufferedImage.setRGB(x, y, bitMatrix.get(x, y) ? 0x000000 : 0xFFFFFF);
+            }
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "PNG", baos);
+        baos.flush();
+
+        return Image.getInstance(baos.toByteArray());
     }
 }

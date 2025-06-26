@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.List;
 
@@ -35,9 +38,10 @@ public class SecurityConfig {
                                 "/vendor/**",
                                 "/login",
                                 "/books",
-                                "library",
+                                "/library",
                                 "/books/popular",
-                                "/books/recommendations"
+                                "/books/recommendations",
+                                "/certificates/reservation"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -54,6 +58,14 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+        templateEngine.addDialect(new SpringSecurityDialect());  // <-- add this
+        return templateEngine;
     }
 
     @Bean

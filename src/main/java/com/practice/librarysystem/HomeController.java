@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
     @GetMapping("/home")
-    public String index(Model model) {
-        model.addAttribute("message", "Welcome to the Library System");
+    public String index() {
         return "index"; // maps to templates/index.html
     }
 }

@@ -28,7 +28,7 @@
     <div class="container">
         <main>
             <h2>Account Details</h2>
-            <div th:if="${user != null}" th:data-user-id="${user.id}" id="userProfileData">
+            <div th:if="${user != null}" th:data-user-id="${user.id}" th:data-user-role="${user.role}" id="userProfileData">
                 <div id="viewMode">
                     <p><strong>Login:</strong> <span th:text="${user.login}" id="loginDisplay">[login]</span></p>
                     <p><strong>Email:</strong> <span th:text="${user.email}" id="emailDisplay">[email]</span></p>
@@ -64,6 +64,20 @@
                 <hr/>
                 <h3>My Reservations</h3>
                 <div id="reservationsContainer" class="mt-3"></div>
+
+                <div th:if="${user.role.toString() == 'ADMIN'}">
+                    <hr/>
+                    <h3>All Reservations (Admin Panel)</h3>
+                    <select id="statusFilter" class="form-select mb-3" onchange="filterReservations()">
+                        <option value="ALL">All</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="RETURNED">Returned</option>
+                        <option value="REJECTED">Rejected</option>
+                        <option value="OVERDUE">Overdue</option>
+                    </select>
+                    <div id="adminReservationsContainer"></div>
+                </div>
             </div>
 
             <div th:if="${user == null}">
@@ -81,7 +95,7 @@
                     <a th:href="@{/}" class="logo"><h1>BookTrack</h1></a>
                     <div class="search-input">
                         <form id="search" action="#">
-                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+                            <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword"/>
                             <i class="fa fa-search"></i>
                         </form>
                     </div>
@@ -89,7 +103,9 @@
                         <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
                         <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
                         <li class="scroll-to-section"><a th:href="@{/profile}" class="active">Profile</a></li>
-                        <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
+                        <li class="scroll-to-section" th:if="${not #authorization.expression('isAuthenticated()')}">
+                            <a th:href="@{/login}">Login</a>
+                        </li>
                     </ul>
                     <a class='menu-trigger'><span>Menu</span></a>
                 </nav>
@@ -106,104 +122,7 @@
     </div>
 </footer>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const userId = document.getElementById("userProfileData")?.dataset.userId;
-
-        document.getElementById("editBtn").addEventListener("click", function() {
-            document.getElementById("viewMode").style.display = "none";
-            document.getElementById("editMode").style.display = "block";
-        });
-
-        document.getElementById("cancelBtn").addEventListener("click", function() {
-            document.getElementById("editMode").style.display = "none";
-            document.getElementById("viewMode").style.display = "block";
-        });
-
-        document.getElementById("saveBtn").addEventListener("click", async function() {
-            const login = document.getElementById("loginInput").value;
-            const email = document.getElementById("emailInput").value;
-            const password = document.getElementById("passwordInput").value;
-            const isEditor = document.getElementById("editorCheckbox").checked;
-            const role = isEditor ? "EDITOR" : "GUEST";
-
-            try {
-                const response = await fetch(`/users/${userId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ login, email, password, role })
-                });
-
-                if (response.ok) {
-                    const updatedUser = await response.json();
-                    document.getElementById("loginDisplay").textContent = updatedUser.login;
-                    document.getElementById("emailDisplay").textContent = updatedUser.email;
-                    document.getElementById("roleDisplay").textContent = updatedUser.role;
-                    document.getElementById("editMode").style.display = "none";
-                    document.getElementById("viewMode").style.display = "block";
-                    alert("Profile updated successfully!");
-                } else {
-                    const errorData = await response.json();
-                    alert("Update failed: " + (errorData.message || response.statusText));
-                }
-            } catch (err) {
-                console.error("Request failed", err);
-                alert("An error occurred: " + err.message);
-            }
-        });
-
-        if (userId) loadReservations(userId);
-
-        async function loadReservations(userId) {
-            try {
-                const res = await fetch(`/reservations/user/${userId}`);
-                const reservations = await res.json();
-                const container = document.getElementById("reservationsContainer");
-                container.innerHTML = '';
-
-                if (!reservations.length) {
-                    container.innerHTML = '<p class="text-muted">No reservations yet.</p>';
-                    return;
-                }
-
-                reservations.forEach(r => {
-                    const div = document.createElement('div');
-                    div.className = "card mb-3";
-                    div.innerHTML = `
-                        <div class="card-body">
-                            <h5 class="card-title">${r.bookTitle}</h5>
-                            <p><strong>Status:</strong> ${r.status}</p>
-                            <p><strong>Start:</strong> ${r.startDate}</p>
-                            <p><strong>Due:</strong> ${r.dueDate}</p>
-                            <p><strong>Returned:</strong> ${r.returnDate || '—'}</p>
-                            ${r.status === 'ACTIVE' ? `<button class="btn btn-sm btn-danger" onclick="returnBook(${r.id})">Return Book</button>` : ''}
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-            } catch (e) {
-                console.error('Failed to load reservations', e);
-            }
-        }
-    });
-
-    async function returnBook(id) {
-        if (!confirm("Mark this book as returned?")) return;
-        try {
-            const res = await fetch(`/reservations/${id}/return`, { method: 'PUT' });
-            if (res.ok) {
-                alert("Book returned successfully.");
-                location.reload();
-            } else {
-                const err = await res.text();
-                alert("Failed: " + err);
-            }
-        } catch (e) {
-            alert("Error returning book.");
-        }
-    }
-</script>
-
+<script src="/assets/js/profile-logic.js"></script>
 <script src="/vendor/jquery/jquery.min.js"></script>
 <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="/assets/js/isotope.min.js"></script>

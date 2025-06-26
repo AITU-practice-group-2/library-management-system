@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 public class ReservationDTO {
 
-    // Getters and Setters
     private Long id;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -41,9 +40,9 @@ public class ReservationDTO {
     // For displaying additional info (optional)
     private String reserverName;
     private String bookTitle;
+    private String bookAuthor;
     private boolean overdue;
 
-    // Constructors
     public ReservationDTO() {}
 
     public ReservationDTO(Long id, LocalDateTime createdAt, LocalDateTime startDate,

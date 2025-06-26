@@ -83,7 +83,6 @@
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
                         <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
                         <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
@@ -182,6 +181,13 @@
                                     <p><strong>Pages:</strong> <span id="bookPages"></span></p>
                                     <p><strong>Available:</strong> <span id="bookAvailable"></span></p>
                                 </div>
+                                <!-- Reservation Controls -->
+                                <div id="reservationControls" class="mt-4">
+                                    <button id="reserveButton" class="btn btn-success">Reserve This Book</button>
+                                    <p id="alreadyReservedMessage" class="text-info" style="display:none;">
+                                        You already reserved this book. <a href="/profile">See my reservations</a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -191,22 +197,29 @@
     </div>
 </div>
 
-<div class="mt-4">
-    <h5>Leave a Review</h5>
-    <form id="reviewForm">
-        <div class="mb-3">
-            <label for="reviewComment" class="form-label">Comment</label>
-            <textarea id="reviewComment" class="form-control" rows="3" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="reviewRating" class="form-label">Rating (1-5)</label>
-            <input type="number" id="reviewRating" class="form-control" min="1" max="5" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
-</div>
+<!-- Reviews Section -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="mt-4">
+                <h5>Leave a Review</h5>
+                <form id="reviewForm">
+                    <div class="mb-3">
+                        <label for="reviewComment" class="form-label">Comment</label>
+                        <textarea id="reviewComment" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewRating" class="form-label">Rating (1-5)</label>
+                        <input type="number" id="reviewRating" class="form-control" min="1" max="5" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
 
-<div id="reviewsList" class="mt-4"></div>
+            <div id="reviewsList" class="mt-4"></div>
+        </div>
+    </div>
+</div>
 
 <footer>
     <div class="container">
@@ -215,6 +228,7 @@
         </div>
     </div>
 </footer>
+
 <!-- Scripts -->
 <!-- Bootstrap core JavaScript -->
 <script src="/vendor/jquery/jquery.min.js"></script>
@@ -223,7 +237,22 @@
 <script src="/assets/js/owl-carousel.js"></script>
 <script src="/assets/js/counter.js"></script>
 <script src="/assets/js/custom.js"></script>
+
 <script>
+    let isEditing = false;
+    let editingReviewId = null;
+
+    async function getCurrentUserId() {
+        try {
+            const response = await fetch('/users/me');
+            if (!response.ok) throw new Error("User not authenticated");
+            return await response.json();
+        } catch (err) {
+            console.error("Failed to get user ID:", err);
+            return null;
+        }
+    }
+
     async function fetchBookDetails() {
         const path = window.location.pathname;
         const bookId = path.split('/').pop();
@@ -242,17 +271,16 @@
             document.getElementById('bookAvailable').textContent = book.available;
             document.getElementById('bookCategory').textContent = book.category;
 
-            // Set the book image
             const bookImage = document.getElementById('bookImage');
-            if (book.image) {
-                bookImage.src = book.image;
-                bookImage.alt = `Cover of ${book.title}`;
-            } else {
-                bookImage.src = '/assets/images/default-book-cover.jpg'; // fallback image
-            }
+            bookImage.src = book.image || '/assets/images/default-book-cover.jpg';
+            bookImage.alt = `Cover of ${book.title}`;
 
             document.getElementById("js-preloader").style.display = "none";
 
+            // Check reservation status
+            await checkReservationStatus(bookId);
+
+            // Load reviews
             await loadReviews(bookId);
 
         } catch (err) {
@@ -262,10 +290,27 @@
         }
     }
 
+    async function checkReservationStatus(bookId) {
+        const userId = await getCurrentUserId();
+        if (!userId) return;
+
+        try {
+            const response = await fetch(`/reservations/user/${userId}/active`);
+            const reservations = await response.json();
+            const alreadyReserved = reservations.some(r => r.bookId == bookId);
+
+            if (alreadyReserved) {
+                document.getElementById('reserveButton').style.display = 'none';
+                document.getElementById('alreadyReservedMessage').style.display = 'block';
+            }
+        } catch (err) {
+            console.error('Reservation check failed:', err);
+        }
+    }
+
     async function loadReviews(bookId) {
         try {
             const currentUserId = await getCurrentUserId();
-            console.log("Current user ID:", currentUserId);
             const response = await fetch(`/reviews/book/${bookId}`);
             if (!response.ok) throw new Error("Reviews not found");
 
@@ -279,27 +324,25 @@
             }
 
             reviews.forEach(review => {
-                console.log("Full review object:", review);
-                console.log("Review user ID:", review.userId);
                 const div = document.createElement('div');
                 div.classList.add('card', 'mb-3');
 
                 let actionButtons = '';
                 if (review.userId === currentUserId) {
                     actionButtons = `
-                    <button class="btn btn-sm btn-warning me-2" onclick="editReview(${review.id}, '${review.comment}', ${review.rating})">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.id})">Delete</button>
-                `;
+                        <button class="btn btn-sm btn-warning me-2" onclick="editReview(${review.id}, '${review.comment}', ${review.rating})">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.id})">Delete</button>
+                    `;
                 }
 
                 div.innerHTML = `
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-primary">${review.userName}</h6>
-                    <p class="card-text">${review.comment}</p>
-                    <p class="card-text"><small class="text-warning">Rating: ${review.rating} / 5</small></p>
-                    ${actionButtons}
-                </div>
-            `;
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-primary">${review.userName}</h6>
+                        <p class="card-text">${review.comment}</p>
+                        <p class="card-text"><small class="text-warning">Rating: ${review.rating} / 5</small></p>
+                        ${actionButtons}
+                    </div>
+                `;
 
                 container.appendChild(div);
             });
@@ -308,20 +351,10 @@
         }
     }
 
-    async function getCurrentUserId() {
-        try {
-            const response = await fetch('/users/me');
-            if (!response.ok) throw new Error("User not authenticated");
-            const userId = await response.json();
-            return userId;
-        } catch (err) {
-            console.error("Failed to get user ID:", err);
-            alert("You must be logged in to submit a review.");
-            return null;
-        }
-    }
     function editReview(id, comment, rating) {
-        // Pre-fill form for editing
+        isEditing = true;
+        editingReviewId = id;
+
         document.getElementById('reviewComment').value = comment;
         document.getElementById('reviewRating').value = rating;
 
@@ -329,34 +362,6 @@
         submitButton.textContent = "Update Review";
         submitButton.classList.remove('btn-primary');
         submitButton.classList.add('btn-success');
-
-        // Replace form submission behavior
-        const form = document.getElementById('reviewForm');
-        const oldHandler = form.onsubmit;
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-
-            const newComment = document.getElementById('reviewComment').value;
-            const newRating = parseInt(document.getElementById('reviewRating').value);
-            try {
-                const response = await fetch(`/reviews/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ comment: newComment, rating: newRating })
-                });
-                if (!response.ok) throw new Error("Failed to update review");
-
-                form.onsubmit = oldHandler; // reset form handler
-                submitButton.textContent = "Submit Review";
-                submitButton.classList.remove('btn-success');
-                submitButton.classList.add('btn-primary');
-                form.reset();
-                await loadReviews(window.location.pathname.split('/').pop());
-            } catch (err) {
-                console.error('Update failed:', err);
-                alert('Failed to update review.');
-            }
-        };
     }
 
     async function deleteReview(id) {
@@ -373,15 +378,18 @@
         }
     }
 
-
-
+    // Event Listeners
     document.addEventListener("DOMContentLoaded", fetchBookDetails);
 
+    // Review form submission
     document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const userId = await getCurrentUserId();
-        if (!userId) return; // not logged in
+        if (!userId) {
+            alert("You must be logged in to submit a review.");
+            return;
+        }
 
         const path = window.location.pathname;
         const bookId = path.split('/').pop();
@@ -389,26 +397,76 @@
         const rating = parseInt(document.getElementById('reviewRating').value);
 
         try {
-            const response = await fetch(`/reviews`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, bookId, comment, rating })
-            });
+            let response;
+            if (isEditing) {
+                response = await fetch(`/reviews/${editingReviewId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comment, rating })
+                });
+            } else {
+                response = await fetch(`/reviews`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, bookId, comment, rating })
+                });
+            }
 
             if (!response.ok) throw new Error("Failed to submit review");
 
-            // Clear the form
-            document.getElementById('reviewComment').value = '';
-            document.getElementById('reviewRating').value = '';
+            // Reset form
+            document.getElementById('reviewForm').reset();
+            const submitButton = document.querySelector('#reviewForm button');
+            submitButton.textContent = "Submit Review";
+            submitButton.classList.remove('btn-success');
+            submitButton.classList.add('btn-primary');
+            isEditing = false;
+            editingReviewId = null;
 
-            await loadReviews(bookId); // reload reviews
-
+            await loadReviews(bookId);
         } catch (err) {
             console.error('Submit failed:', err);
             alert('Failed to submit review.');
         }
     });
 
+    // Reservation button event listener
+    document.getElementById('reserveButton').addEventListener('click', async () => {
+        const userId = await getCurrentUserId();
+        if (!userId) {
+            alert("You must be logged in to reserve a book.");
+            return;
+        }
+
+        const bookId = parseInt(window.location.pathname.split('/').pop());
+        const now = new Date();
+        const due = new Date();
+        due.setDate(now.getDate() + 10);
+
+        const startDate = now.toISOString().split('.')[0];
+        const dueDate = due.toISOString().split('.')[0];
+
+        try {
+            const response = await fetch('/reservations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reserverId: userId, bookId, startDate, dueDate })
+            });
+
+            if (response.ok) {
+                alert('Book reserved successfully!');
+                document.getElementById('reserveButton').style.display = 'none';
+                document.getElementById('alreadyReservedMessage').style.display = 'block';
+            } else {
+                const error = await response.json();
+                alert('Reservation failed: ' + (error.message || error));
+            }
+        } catch (err) {
+            console.error('Reservation error:', err);
+            alert('Something went wrong while reserving the book.');
+        }
+    });
 </script>
+
 </body>
 </html>

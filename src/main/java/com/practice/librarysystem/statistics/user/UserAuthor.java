@@ -1,4 +1,4 @@
-package com.practice.librarysystem.user.statistics;
+package com.practice.librarysystem.statistics.user;
 
 import com.practice.librarysystem.author.Author;
 import com.practice.librarysystem.user.User;
@@ -35,7 +35,7 @@ public class UserAuthor {
 @Data
 @NoArgsConstructor
 class UserAuthorId implements Serializable {
-    private int userId;
-    private int authorId;
+    private long userId;
+    private long authorId;
 }
 

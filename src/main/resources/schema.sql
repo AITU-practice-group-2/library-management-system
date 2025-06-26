@@ -19,7 +19,9 @@ CREATE TABLE IF NOT EXISTS books (
     available INT NOT NULL,
     author_id INT REFERENCES authors NOT NULL,
     category_id INT REFERENCES categories NOT NULL,
-    image_src VARCHAR(1000)
+    image_src VARCHAR(1000),
+    popularity INT NOT NULL,
+    views INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (

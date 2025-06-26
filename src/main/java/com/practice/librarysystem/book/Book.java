@@ -41,6 +41,10 @@ public class Book {
     @Column(name = "image_src")
     String imageSource;
 
+    int popularity;
+
+    Integer views;
+
     @OneToMany(mappedBy = "book")
     final List<Reservation> reservations = new ArrayList<>();
 

@@ -4,6 +4,7 @@ import com.practice.librarysystem.book.dto.BookFullResponse;
 import com.practice.librarysystem.book.dto.BookShortResponse;
 import com.practice.librarysystem.book.dto.NewBookRequest;
 import com.practice.librarysystem.book.dto.UpdateBookRequest;
+import com.practice.librarysystem.statistics.book.BookStatisticsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -11,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,8 @@ public class BookController {
     BookService bookService;
     BookMapper bookMapper;
 
+    BookStatisticsService statisticsService;
+
     @GetMapping
     public List<BookShortResponse> findAllByMultipleParams(@RequestParam(required = false) String search,
                                                            @RequestParam(required = false) @Min(1) Long author,
@@ -36,21 +40,28 @@ public class BookController {
                                                            @RequestParam(defaultValue = "0") int from,
                                                            @RequestParam(defaultValue = "10") int size,
                                                            HttpServletRequest httpServletRequest) {
+        String ip = getClientIp(httpServletRequest);
+        log.info("Endpoint GET: /books was accessed by IP:{}", ip);
 
-        log.info("Endpoint GET: /books was accessed by IP:{}", getClientIp(httpServletRequest));
 
-        return bookMapper.toShortDto(
-                bookService.findAllByMultipleParams(search, author, category, from, size));
+        Page<Book> result = bookService.findAllByMultipleParams(search, author, category, from, size);
+
+        return bookMapper.toShortDto(result);
     }
 
     @GetMapping("/{id}")
     public BookFullResponse findById(@PathVariable Long id,
-                                     HttpServletRequest httpServletRequest) {
+                                     HttpServletRequest httpServletRequest,
+                                     Principal principal) {
+        String ip = getClientIp(httpServletRequest);
+        log.info("Endpoint GET: /books/{} was accessed by IP:{}", id, ip);
 
-        log.info("Endpoint GET: /books/{} was accessed by IP:{}", id, getClientIp(httpServletRequest));
+        Book result = bookService.findById(id);
+        String email = principal.getName();
 
-        return bookMapper.toDto(
-                bookService.findById(id));
+        statisticsService.addViewToBook(result, ip, email);
+
+        return bookMapper.toDto(result);
     }
 
     @PostMapping
@@ -100,5 +111,32 @@ public class BookController {
         String email = principal.getName();
 
         bookService.deleteById(id, email);
+    }
+
+    @GetMapping("/recommendations")
+    public List<BookShortResponse> findAllRecommended(HttpServletRequest httpServletRequest,
+                                                      Principal principal) {
+
+        log.info("Endpoint GET: /books/recommendations was accessed by IP:{}", getClientIp(httpServletRequest));
+
+        if (principal == null) {
+            return List.of();
+        }
+
+        String email = principal.getName();
+
+        return bookMapper.toShortDto(
+                bookService.findAllRecommended(email));
+    }
+
+    @GetMapping("/popular")
+    public List<BookShortResponse> findAllPopular(@RequestParam(defaultValue = "0") int from,
+                                                  @RequestParam(defaultValue = "3") int size,
+                                                  HttpServletRequest httpServletRequest) {
+
+        log.info("Endpoint GET: /books/popular was accessed by IP:{}", getClientIp(httpServletRequest));
+
+        return bookMapper.toShortDto(
+                bookService.findAllPopular(from, size));
     }
 }

@@ -24,4 +24,6 @@ public class BookFullResponse {
     String category;
 
     String image;
+
+    Integer views;
 }

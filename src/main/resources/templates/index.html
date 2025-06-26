@@ -69,7 +69,6 @@ https://templatemo.com/tm-586-scholar
                       <li class="scroll-to-section"><a th:href="@{/}" class="active">Home</a></li>
                       <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
                       <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
-                      <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
                       <li class="scroll-to-section" th:if="${not #authorization.expression('isAuthenticated()')}">
                         <a th:href="@{/login}">Login</a>
                       </li>

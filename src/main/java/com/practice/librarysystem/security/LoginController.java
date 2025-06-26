@@ -38,7 +38,6 @@ public class LoginController {
 
     @PostMapping("/register")
     public String registerSubmit(@ModelAttribute("user") UserNewDto userDto, HttpServletRequest request) {
-        userController.create(userDto, request);
         String ip = RequestConstants.getClientIp(request);
         try {
             log.info("Successful authorisation from IP:{}!", ip);
@@ -48,6 +47,7 @@ public class LoginController {
             return "redirect:/login?error";
         }
 
+        userController.create(userDto, request);
         return "redirect:/";
     }
 }

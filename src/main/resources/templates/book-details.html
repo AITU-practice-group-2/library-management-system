@@ -187,22 +187,24 @@
     </div>
 </div>
 
-<div class="mt-4">
-    <h5>Leave a Review</h5>
-    <form id="reviewForm">
-        <div class="mb-3">
-            <label for="reviewComment" class="form-label">Comment</label>
-            <textarea id="reviewComment" class="form-control" rows="3" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="reviewRating" class="form-label">Rating (1-5)</label>
-            <input type="number" id="reviewRating" class="form-control" min="1" max="5" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
-</div>
+<div class="container mt-4">
+    <div class="mx-auto" style="max-width: 600px;">
+        <h5 class="text-center">Leave a Review</h5>
+        <form id="reviewForm">
+            <div class="mb-3">
+                <label for="reviewComment" class="form-label">Comment</label>
+                <textarea id="reviewComment" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="reviewRating" class="form-label">Rating (1-5)</label>
+                <input type="number" id="reviewRating" class="form-control" min="1" max="5" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+        </form>
 
-<div id="reviewsList" class="mt-4"></div>
+        <div id="reviewsList" class="mt-4"></div>
+    </div>
+</div>
 
 <footer>
     <div class="container">
@@ -308,6 +310,8 @@
                         Delete
                     </button>`;
                 }
+                const createdAt = new Date(review.createdAt);
+                const formattedDate = createdAt.toLocaleString();
 
                 div.innerHTML = `
                 <div class="card-body">
@@ -315,6 +319,9 @@
                     <p class="card-text">${review.comment}</p>
                     <p class="card-text"><small class="text-warning">
                         Rating: ${review.rating} / 5
+                    </small></p>
+                    <p class="card-text"><small class="text-warning">
+                        Created at: ${formattedDate}
                     </small></p>
                     ${actionButtons}
                 </div>`;

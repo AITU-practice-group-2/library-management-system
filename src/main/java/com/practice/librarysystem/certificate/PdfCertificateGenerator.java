@@ -1,22 +1,25 @@
-package com.practice.librarysystem.util;
+package com.practice.librarysystem.certificate;
 
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import com.practice.librarysystem.reservation.Reservation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PdfCertificateGenerator {
 
-    public static byte[] generateReservationCertificate(Long userId, Long bookId) throws Exception {
+    public static byte[] generateReservationCertificate(Reservation reservation) throws Exception {
+        Long userId = reservation.getReserver().getId();
+        Long bookId = reservation.getBook().getId();
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, outputStream);
@@ -26,7 +29,7 @@ public class PdfCertificateGenerator {
         // Colors
         BaseColor brandPurple = new BaseColor(128, 90, 213);   // #805AD5
         BaseColor lightLavender = new BaseColor(245, 243, 255); // #f5f3ff
-        BaseColor darkGreen = new BaseColor(28, 69, 50);       // #1C4532
+        BaseColor darkGreen = new BaseColor(0, 128, 0);
 
         // Fonts
         Font titleFont = new Font(Font.FontFamily.HELVETICA, 24, Font.BOLD, brandPurple);
@@ -35,39 +38,38 @@ public class PdfCertificateGenerator {
         Font labelFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, brandPurple);
 
         // Title
-        Paragraph title = new Paragraph("Reservation Certificate", titleFont);
+        Paragraph title = new Paragraph("BookTrack", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
         title.setSpacingAfter(20);
         document.add(title);
 
         // Brand Name
-        Paragraph brand = new Paragraph("BookTrack", brandFont);
+        Paragraph brand = new Paragraph("Reservation Certificate", brandFont);
         brand.setAlignment(Element.ALIGN_CENTER);
         brand.setSpacingAfter(30);
         document.add(brand);
 
         // Info Section
-        PdfPTable table = new PdfPTable(2);
-        table.setWidths(new int[]{1, 2});
-        table.setSpacingBefore(20);
-        table.setWidthPercentage(80);
-        table.setHorizontalAlignment(Element.ALIGN_CENTER);
+        String certText = String.format(
+                "This certificate proves that the user %s was approved and entrusted with the storage and exploitation of the book \"%s\" in period of %s - %s, subject to the timely return of the said book.",
+                reservation.getReserver().getLogin(),
+                reservation.getBook().getTitle(),
+                reservation.getStartDate(),
+                reservation.getDueDate()
+        );
 
-        table.addCell(createCell("User ID:", labelFont));
-        table.addCell(createCell(String.valueOf(userId), fieldFont));
-
-        table.addCell(createCell("Book ID:", labelFont));
-        table.addCell(createCell(String.valueOf(bookId), fieldFont));
-
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        table.addCell(createCell("Issued At:", labelFont));
-        table.addCell(createCell(timestamp, fieldFont));
-
-        document.add(table);
+        Paragraph certParagraph = new Paragraph(certText, fieldFont);
+        certParagraph.setAlignment(Element.ALIGN_JUSTIFIED);
+        certParagraph.setSpacingBefore(20);
+        certParagraph.setSpacingAfter(30);
+        document.add(certParagraph);
 
         // Generate QR code (text can be customized — example below)
-        String qrText = String.format("Reservation Certificate%nUser ID: %d%nBook ID: %d%nIssued At: %s",
-                userId, bookId, timestamp);
+        String qrText = String.format("""
+                Reservation Details Data
+                %nReserver ID: %d
+                %nBook ID: %d%nIssued At: %s""",
+                userId, bookId, LocalDateTime.now());
         Image qrImage = generateQrCodeImage(qrText, 150, 150);
 
         // Center and add QR code
@@ -85,13 +87,6 @@ public class PdfCertificateGenerator {
         document.close();
 
         return outputStream.toByteArray();
-    }
-
-    private static PdfPCell createCell(String content, Font font) {
-        PdfPCell cell = new PdfPCell(new Phrase(content, font));
-        cell.setPadding(10);
-        cell.setBorder(Rectangle.NO_BORDER);
-        return cell;
     }
 
     private static Image generateQrCodeImage(String text, int width, int height) throws Exception {

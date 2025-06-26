@@ -31,15 +31,6 @@
 
     <h2>All Categories</h2>
 
-    <!-- Banner items section -->
-    <div class="banner-items row mb-4">
-        <div class="col-md-6">
-            <img src="@{/images/banner-item-01.jpg}" alt="Banner Item 01" />
-        </div>
-        <div class="col-md-6">
-            <img src="@{/images/banner-item-02.jpg}" alt="Banner Item 02" />
-        </div>
-    </div>
 
     <!-- Success & Error Messages -->
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
@@ -96,24 +87,26 @@
                 <div class="modal-content">
                     <form th:action="@{/categories/view/update/{id}(id=${category.categoryId})}" method="post"
                           th:object="${category}">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Edit Category</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label">Category Name</label>
-                                <input type="text" th:field="*{name}" class="form-control" required/>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
+<!--                        <div class="modal-header">-->
+<!--                            <h5 class="modal-title">Edit Category</h5>-->
+<!--                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--                            <div class="mb-3">-->
+<!--                                <label class="form-label">Category Name</label>-->
+<!--                                <label>-->
+<!--                                    <input type="text" th:field="*{name}" class="form-control" required/>-->
+<!--                                </label>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3">-->
+<!--                                <label class="form-label">Description</label>-->
+<!--                                <textarea th:field="*{description}" class="form-control" rows="3"></textarea>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>-->
+<!--                            <button type="submit" class="btn btn-primary">Save Changes</button>-->
+<!--                        </div>-->
                     </form>
                 </div>
             </div>

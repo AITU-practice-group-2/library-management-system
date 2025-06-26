@@ -1,3 +1,6 @@
+<<<<<<< authorComplete
+This readme is the for the AuthorComplete part which I corrected the folder structure.
+=======
 # Library Management System
 A web-based library management system built with Spring Boot and Thymeleaf. The application provides a simple interface for managing books, reservations and reviews in a library setting.
 
@@ -218,3 +221,4 @@ Review APIs:
 ` DELETE /reviews/{id}` - delete a review by ID.
 
 НАС ДЕРЖАТЬ ПОДВАЛ И ЗАСТАВЛЯТЬ ПИСАТЬ JAVA. СПАСИТЕ НАС
+>>>>>>> main

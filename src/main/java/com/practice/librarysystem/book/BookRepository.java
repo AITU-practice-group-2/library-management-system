@@ -25,4 +25,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findAllByAvailableGreaterThanOrderByPopularity(int AvailableNum, Pageable pageable);
 
     List<Book> findTop3ByAuthor_IdAndAvailableGreaterThanOrCategory_IdAndAvailableGreaterThan(Long authorId, int availableNum1, Long categoryId, int availableNum2);
+
+    Page<Book> findAllByAvailableGreaterThan(Integer available, Pageable pageable);
 }

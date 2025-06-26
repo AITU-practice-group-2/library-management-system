@@ -91,7 +91,7 @@ public class BookService {
         }
 
 
-        return bookRepository.findAll(pageable);
+        return bookRepository.findAllByAvailableGreaterThan(0, pageable);
     }
 
     public Book findById(Long id) {

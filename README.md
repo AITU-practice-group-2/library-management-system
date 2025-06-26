@@ -216,3 +216,5 @@ Review APIs:
 ` PUT /reviews/{id}` - update a review. Popularity rating is updated based on new score.
 
 ` DELETE /reviews/{id}` - delete a review by ID.
+
+НАС ДЕРЖАТЬ ПОДВАЛ И ЗАСТАВЛЯТЬ ПИСАТЬ JAVA. СПАСИТЕ НАС

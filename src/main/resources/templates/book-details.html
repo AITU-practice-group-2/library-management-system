@@ -85,7 +85,9 @@
                         <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
                         <li class="scroll-to-section"><a th:href="@{/library}">Books</a></li>
                         <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
-                        <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
+                        <li class="scroll-to-section" th:if="${not #authorization.expression('isAuthenticated()')}">
+                            <a th:href="@{/login}">Login</a>
+                        </li>
                     </ul>
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -178,6 +180,13 @@
                                     <p><strong>Pages:</strong> <span id="bookPages"></span></p>
                                     <p><strong>Available:</strong> <span id="bookAvailable"></span></p>
                                 </div>
+                                <!-- Reservation Controls -->
+                                <div id="reservationControls" class="mt-4">
+                                    <button id="reserveButton" class="btn btn-success">Reserve This Book</button>
+                                    <p id="alreadyReservedMessage" class="text-info" style="display:none;">
+                                        You already reserved this book. <a href="/profile">See my reservations</a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -187,22 +196,29 @@
     </div>
 </div>
 
-<div class="mt-4">
-    <h5>Leave a Review</h5>
-    <form id="reviewForm">
-        <div class="mb-3">
-            <label for="reviewComment" class="form-label">Comment</label>
-            <textarea id="reviewComment" class="form-control" rows="3" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="reviewRating" class="form-label">Rating (1-5)</label>
-            <input type="number" id="reviewRating" class="form-control" min="1" max="5" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
-</div>
+<!-- Reviews Section -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="mt-4">
+                <h5>Leave a Review</h5>
+                <form id="reviewForm">
+                    <div class="mb-3">
+                        <label for="reviewComment" class="form-label">Comment</label>
+                        <textarea id="reviewComment" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewRating" class="form-label">Rating (1-5)</label>
+                        <input type="number" id="reviewRating" class="form-control" min="1" max="5" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
 
-<div id="reviewsList" class="mt-4"></div>
+            <div id="reviewsList" class="mt-4"></div>
+        </div>
+    </div>
+</div>
 
 <footer>
     <div class="container">
@@ -211,6 +227,7 @@
         </div>
     </div>
 </footer>
+
 <!-- Scripts -->
 <!-- Bootstrap core JavaScript -->
 <script src="/vendor/jquery/jquery.min.js"></script>
@@ -219,9 +236,21 @@
 <script src="/assets/js/owl-carousel.js"></script>
 <script src="/assets/js/counter.js"></script>
 <script src="/assets/js/custom.js"></script>
+
 <script>
     let isEditing = false;
     let editingReviewId = null;
+
+    async function getCurrentUserId() {
+        try {
+            const response = await fetch('/users/me');
+            if (!response.ok) throw new Error("User not authenticated");
+            return await response.json();
+        } catch (err) {
+            console.error("Failed to get user ID:", err);
+            return null;
+        }
+    }
 
     async function fetchBookDetails() {
         const path = window.location.pathname;
@@ -247,6 +276,10 @@
 
             document.getElementById("js-preloader").style.display = "none";
 
+            // Check reservation status
+            await checkReservationStatus(bookId);
+
+            // Load reviews
             await loadReviews(bookId);
 
         } catch (err) {
@@ -266,6 +299,25 @@
         } catch (err) {
             console.error("Failed to check role:", err);
             return false;
+        }
+    }
+
+
+    async function checkReservationStatus(bookId) {
+        const userId = await getCurrentUserId();
+        if (!userId) return;
+
+        try {
+            const response = await fetch(`/reservations/user/${userId}/active`);
+            const reservations = await response.json();
+            const alreadyReserved = reservations.some(r => r.bookId == bookId);
+
+            if (alreadyReserved) {
+                document.getElementById('reserveButton').style.display = 'none';
+                document.getElementById('alreadyReservedMessage').style.display = 'block';
+            }
+        } catch (err) {
+            console.error('Reservation check failed:', err);
         }
     }
 
@@ -327,18 +379,6 @@
         }
     }
 
-    async function getCurrentUserId() {
-        try {
-            const response = await fetch('/users/me');
-            if (!response.ok) throw new Error("User not authenticated");
-            return await response.json();
-        } catch (err) {
-            console.error("Failed to get user ID:", err);
-            alert("You must be logged in to submit a review.");
-            return null;
-        }
-    }
-
     function editReview(id, comment, rating) {
         isEditing = true;
         editingReviewId = id;
@@ -366,13 +406,18 @@
         }
     }
 
+    // Event Listeners
     document.addEventListener("DOMContentLoaded", fetchBookDetails);
 
+    // Review form submission
     document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const userId = await getCurrentUserId();
-        if (!userId) return;
+        if (!userId) {
+            alert("You must be logged in to submit a review.");
+            return;
+        }
 
         const path = window.location.pathname;
         const bookId = path.split('/').pop();
@@ -410,6 +455,43 @@
         } catch (err) {
             console.error('Submit failed:', err);
             alert('Failed to submit review.');
+        }
+    });
+
+    // Reservation button event listener
+    document.getElementById('reserveButton').addEventListener('click', async () => {
+        const userId = await getCurrentUserId();
+        if (!userId) {
+            alert("You must be logged in to reserve a book.");
+            return;
+        }
+
+        const bookId = parseInt(window.location.pathname.split('/').pop());
+        const now = new Date();
+        const due = new Date();
+        due.setDate(now.getDate() + 10);
+
+        const startDate = now.toISOString().split('.')[0];
+        const dueDate = due.toISOString().split('.')[0];
+
+        try {
+            const response = await fetch('/reservations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reserverId: userId, bookId, startDate, dueDate })
+            });
+
+            if (response.ok) {
+                alert('Book reserved successfully!');
+                document.getElementById('reserveButton').style.display = 'none';
+                document.getElementById('alreadyReservedMessage').style.display = 'block';
+            } else {
+                const error = await response.json();
+                alert('Reservation failed: ' + (error.message || error));
+            }
+        } catch (err) {
+            console.error('Reservation error:', err);
+            alert('Something went wrong while reserving the book.');
         }
     });
 </script>

@@ -2,5 +2,6 @@ package com.practice.librarysystem.user;
 
 public enum Role {
     GUEST,
-    ADMIN
+    ADMIN,
+    EDITOR
 }

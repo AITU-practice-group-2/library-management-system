@@ -23,7 +23,7 @@ public class Review {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "reviewer_id", nullable = false)  // FIXED
+    @JoinColumn(name = "reviewer_id", nullable = false)
     private User user;
 
     @ManyToOne

@@ -64,13 +64,12 @@
                     <!-- ***** Serach Start ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li class="scroll-to-section"><a th:href="@{/home}">Home</a></li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
-                        <li class="scroll-to-section"><a href="#" class="active">Books</a></li>
-                        <li class="scroll-to-section"><a th:href="@{/authors-view}">Authors</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/}">Home</a></li>
+                        <li class="scroll-to-section"><a th:href="@{/library}" class="active">Books</a></li>
                         <li class="scroll-to-section"><a th:href="@{/profile}">Profile</a></li>
-                        <li class="scroll-to-section"><a href="#contact">Contact Us</a></li>
-                        <li class="scroll-to-section"><a th:href="@{/login}">Login</a></li>
+                        <li class="scroll-to-section" th:if="${not #authorization.expression('isAuthenticated()')}">
+                            <a th:href="@{/login}">Login</a>
+                        </li>
                     </ul>
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -82,6 +81,8 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
+
+
 
 <div class="main-banner" id="top">
     <div class="container">
@@ -139,6 +140,15 @@
     </div>
 </div>
 
+
+<div th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''EDITOR'')')}"
+     style="position: fixed; bottom: 30px; right: 30px; z-index: 1000;">
+    <button type="button" class="btn btn-success btn-lg shadow-lg px-4 py-3 rounded-pill"
+            data-bs-toggle="modal" data-bs-target="#createBookModal">
+        + Create Book
+    </button>
+</div>
+
 <div class="services section" id="services">
     <div class="container">
         <div class="row" id="bookContainer">
@@ -152,6 +162,51 @@
 
     </div>
 </div>
+
+<!-- Create Book Modal -->
+<div class="modal fade" id="createBookModal" tabindex="-1" aria-labelledby="createBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form id="createBookForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createBookModalLabel">Create New Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="title" placeholder="Title" required />
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" class="form-control" name="publicationYear" placeholder="Publication Year (≤2027)" max="2027" required />
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" class="form-control" name="pages" placeholder="Pages" min="1" required />
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" class="form-control" name="available" placeholder="Available Copies" min="0" required />
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="author" placeholder="Author ID" required />
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="category" placeholder="Category ID" required />
+                    </div>
+                    <div class="col-12">
+                        <textarea class="form-control" name="description" rows="3" placeholder="Description" required></textarea>
+                    </div>
+                    <div class="col-12">
+                        <input type="text" class="form-control" name="image" placeholder="Image URL (optional)" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <footer>
     <div class="container">
@@ -175,7 +230,6 @@
     const pageSize = 6;
     let currentSearch = '';
 
-
     async function fetchBooks() {
         try {
             const response = await fetch(`/books?from=${currentPage * pageSize}&size=${pageSize}&search=${encodeURIComponent(currentSearch)}`);
@@ -187,28 +241,26 @@
 
             books.forEach(book => {
                 container.innerHTML += `
-          <div class="col-lg-4 col-md-6 mb-4">
-            <a href="/library/${book.id}" style="text-decoration: none; color: inherit;">
-              <div class="service-item">
-                <div class="icon">
-                  <img src="assets/images/service-01.png" alt="Book Icon">
-                </div>
-                <div class="main-content">
-                  <h4 class="text-truncate-2">${book.title}</h4>
-                  <h6>${book.author}</h6>
-                  <p class="text-truncate-4">${book.description}</p>
-                  <div class="mt-2">
-                    ${book.available
-                            ? `<div class="badge bg-success text-white rounded-pill px-3 py-1">Available</div>`
-                            : `<div class="badge bg-danger text-white rounded-pill px-3 py-1">Unavailable</div>`}
-                    </div>
-                </div>
-              </div>
-            </a>
-          </div>
-`;
-
-
+                  <div class="col-lg-4 col-md-6 mb-4">
+                    <a href="/library/${book.id}" style="text-decoration: none; color: inherit;">
+                      <div class="service-item">
+                        <div class="icon">
+                          <img src="assets/images/service-01.png" alt="Book Icon">
+                        </div>
+                        <div class="main-content">
+                          <h4 class="text-truncate-2">${book.title}</h4>
+                          <h6>${book.author}</h6>
+                          <p class="text-truncate-4">${book.description}</p>
+                          <div class="mt-2">
+                            ${book.available
+                    ? `<div class="badge bg-success text-white rounded-pill px-3 py-1">Available</div>`
+                    : `<div class="badge bg-danger text-white rounded-pill px-3 py-1">Unavailable</div>`}
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                `;
             });
 
             document.getElementById('prevBtn').disabled = currentPage === 0;
@@ -250,7 +302,49 @@
         fetchBooks();
     }
 
+    // ✅ Create Book Modal Submission
+    document.getElementById("createBookForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const payload = {};
+        formData.forEach((value, key) => {
+            if (["author", "category", "publicationYear", "pages", "available"].includes(key)) {
+                payload[key] = Number(value);
+            } else {
+                payload[key] = value;
+            }
+        });
+
+        try {
+            const response = await fetch("/books", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                alert("Failed to create book: " + error);
+                return;
+            }
+
+            alert("Book created successfully!");
+            this.reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById("createBookModal"));
+            modal.hide();
+            fetchBooks(); // 🔁 Refresh book list
+
+        } catch (err) {
+            console.error(err);
+            alert("Error creating book.");
+        }
+    });
 </script>
+
+
+
 
 
 </body>

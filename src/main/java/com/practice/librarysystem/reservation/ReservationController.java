@@ -2,18 +2,24 @@ package com.practice.librarysystem.reservation;
 
 import com.practice.librarysystem.reservation.dto.CreateReservationDTO;
 import com.practice.librarysystem.reservation.dto.ReservationDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.practice.librarysystem.util.RequestConstants.getClientIp;
+
 @RestController
-@RequestMapping("/api/reservations")
+@RequestMapping("/reservations")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -113,9 +119,38 @@ public class ReservationController {
         }
     }
 
+    @PostMapping("/{id}/approve")
+    public ResponseEntity<?> approveReservation(@PathVariable Long id) {
+        try {
+            reservationService.approveReservation(id);
+            return ResponseEntity.ok("Reservation approved successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error approving reservation: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<?> rejectReservation(@PathVariable Long id) {
+        try {
+            reservationService.rejectReservation(id);
+            return ResponseEntity.ok("Reservation rejected successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error rejecting reservation: " + e.getMessage());
+        }
+    }
+
     // Return a book
     @PutMapping("/{id}/return")
-    public ResponseEntity<?> returnBook(@PathVariable Long id) {
+    public ResponseEntity<?> returnBook(@PathVariable Long id,
+                                        HttpServletRequest httpServletRequest) {
+        log.info("Endpoint POST: /reservations/{}/return was accessed by IP:{}", id, getClientIp(httpServletRequest));
+
         try {
             ReservationDTO reservation = reservationService.returnBook(id);
             return ResponseEntity.ok(reservation);

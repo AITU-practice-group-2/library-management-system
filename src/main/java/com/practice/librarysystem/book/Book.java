@@ -41,7 +41,7 @@ public class Book {
     @Column(name = "image_src")
     String imageSource;
 
-    Integer popularity;
+    int popularity;
 
     Integer views;
 
@@ -50,4 +50,15 @@ public class Book {
 
     @OneToMany(mappedBy = "book")
     final List<Review> reviews = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", publicationYear=" + publicationYear +
+                ", available=" + available +
+                '}';
+    }
+
 }

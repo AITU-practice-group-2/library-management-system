@@ -101,7 +101,6 @@ public class ReviewController {
                              HttpServletRequest httpServletRequest) {
         String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint DELETE: /reviews/{} was accessed by IP:{} by user:{}", id, ip, principal.getName());
-
         reviewService.deleteReview(id, principal.getName());
     }
 }

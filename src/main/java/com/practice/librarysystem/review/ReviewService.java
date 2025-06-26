@@ -3,6 +3,7 @@ package com.practice.librarysystem.review;
 import com.practice.librarysystem.book.Book;
 import com.practice.librarysystem.book.BookRepository;
 import com.practice.librarysystem.exception.NotFoundException;
+import com.practice.librarysystem.user.Role;
 import com.practice.librarysystem.user.User;
 import com.practice.librarysystem.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -96,17 +97,24 @@ public class ReviewService {
         return reviewRepository.save(existing);
     }
 
-    public void deleteReview(Long id, String email) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Review not found with id: " + id));
+    public void deleteReview(Long reviewId, String email) {
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() ->
+                        new NotFoundException("Review not found with id: " + reviewId));
 
         User currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User with email = " + email + " not found."));
+                .orElseThrow(() ->
+                        new NotFoundException("User with email = " + email + " not found."));
 
-        if (review.getUser().getId() != currentUser.getId()) {
+        boolean isOwner = review.getUser().getId() == currentUser.getId();
+
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+
+
+        if (!isOwner && !isAdmin) {
             throw new AccessDeniedException("You are not allowed to delete this review");
         }
-
 
         reviewRepository.delete(review);
     }

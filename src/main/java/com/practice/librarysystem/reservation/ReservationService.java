@@ -47,6 +47,8 @@ public class ReservationService {
         Book book = findBookById(bookId);
 
         Reservation reservation = reservationMapper.toEntity(createDTO);
+        reservation.setStatus(ReservationStatus.PENDING);
+
 
         reservation.setReserver(reserver);
         reservation.setBook(book);
@@ -54,6 +56,35 @@ public class ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return reservationMapper.toDTO(savedReservation);
+    }
+
+    public ReservationDTO approveReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        Book book = reservation.getBook();
+
+        if (reservation.getStatus() != ReservationStatus.PENDING) {
+            throw new IllegalStateException("Only pending reservations can be approved");
+        }
+
+        book.setAvailable(book.getAvailable() - 1);
+        bookRepository.save(book);
+
+        reservation.setStatus(ReservationStatus.ACTIVE);
+        return reservationMapper.toDTO(reservation);
+    }
+
+    public ReservationDTO rejectReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        if (reservation.getStatus() != ReservationStatus.PENDING) {
+            throw new IllegalStateException("Only pending reservations can be rejected");
+        }
+
+        reservation.setStatus(ReservationStatus.REJECTED);
+        return reservationMapper.toDTO(reservation);
     }
 
     // Get reservation by ID
@@ -98,12 +129,17 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
 
+        Book book = reservation.getBook();
+
         if (reservation.getStatus() != ReservationStatus.ACTIVE) {
             throw new IllegalStateException("Only active reservations can be returned");
         }
 
         reservation.setReturnDate(LocalDateTime.now());
         reservation.setStatus(ReservationStatus.RETURNED);
+
+        book.setAvailable(book.getAvailable() + 1);
+        bookRepository.save(book);
 
         Reservation savedReservation = reservationRepository.save(reservation);
         return reservationMapper.toDTO(savedReservation);
@@ -114,11 +150,15 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
 
+        Book book = reservation.getBook();
+
         if (reservation.getStatus() != ReservationStatus.ACTIVE) {
             throw new IllegalStateException("Only active reservations can be cancelled");
         }
 
         reservation.setStatus(ReservationStatus.CANCELLED);
+        book.setAvailable(book.getAvailable() + 1);
+        bookRepository.save(book);
 
         Reservation savedReservation = reservationRepository.save(reservation);
         return reservationMapper.toDTO(savedReservation);

@@ -361,15 +361,18 @@
                     </button>`;
                 }
 
+                const createdAt = new Date(review.createdAt);
+                const formattedDate = createdAt.toLocaleString();
+
                 div.innerHTML = `
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-primary">${review.userName}</h6>
                     <p class="card-text">${review.comment}</p>
-                    <p class="card-text"><small class="text-warning">
-                        Rating: ${review.rating} / 5
-                    </small></p>
-                    ${actionButtons}
+                    <p class="card-text"><small class="text-warning">        Rating: ${review.rating} / 5    </small></p>    <p class="card-text"><small class="text-warning">        Created at: ${formattedDate}
+                    </small></p>    ${actionButtons}
                 </div>`;
+
+
 
                 container.appendChild(div);
             }

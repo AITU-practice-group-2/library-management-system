@@ -15,6 +15,5 @@ public class ReviewRequestDTO {
     private Long bookId;
 
     private String comment;
-
     private byte rating;
 }

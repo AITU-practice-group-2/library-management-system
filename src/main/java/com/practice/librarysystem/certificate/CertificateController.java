@@ -25,13 +25,13 @@ public class CertificateController {
 
     ReservationRepository reservationRepository;
 
-    @GetMapping("/reservation")
+    @GetMapping
     public void generateReservationCertificate(
-            @RequestParam Long reservationId,
+            @RequestParam(name = "reservation") Long reservationId,
             HttpServletResponse response,
             HttpServletRequest httpServletRequest
     ) {
-        log.info("Endpoint GET: /certificates/reservation?reservationId={} was accessed by IP:{}", reservationId, getClientIp(httpServletRequest));
+        log.info("Endpoint GET: /certificates?reservation={} was accessed by IP:{}", reservationId, getClientIp(httpServletRequest));
 
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NotFoundException(

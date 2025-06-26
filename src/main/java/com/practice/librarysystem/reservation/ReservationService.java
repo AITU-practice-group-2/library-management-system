@@ -47,6 +47,8 @@ public class ReservationService {
         Book book = findBookById(bookId);
 
         Reservation reservation = reservationMapper.toEntity(createDTO);
+        reservation.setStatus(ReservationStatus.PENDING);
+
 
         reservation.setReserver(reserver);
         reservation.setBook(book);
@@ -54,6 +56,30 @@ public class ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return reservationMapper.toDTO(savedReservation);
+    }
+
+    public ReservationDTO approveReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        if (reservation.getStatus() != ReservationStatus.PENDING) {
+            throw new IllegalStateException("Only pending reservations can be approved");
+        }
+
+        reservation.setStatus(ReservationStatus.ACTIVE);
+        return reservationMapper.toDTO(reservation);
+    }
+
+    public ReservationDTO rejectReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        if (reservation.getStatus() != ReservationStatus.PENDING) {
+            throw new IllegalStateException("Only pending reservations can be rejected");
+        }
+
+        reservation.setStatus(ReservationStatus.REJECTED);
+        return reservationMapper.toDTO(reservation);
     }
 
     // Get reservation by ID

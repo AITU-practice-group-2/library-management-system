@@ -4,8 +4,6 @@ import com.practice.librarysystem.book.Book;
 import com.practice.librarysystem.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -13,8 +11,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "reservations")
 public class Reservation {
-
-    // Getters and Setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

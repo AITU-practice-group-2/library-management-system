@@ -29,4 +29,13 @@ public class Author {
 
     @OneToMany(mappedBy = "author")
     final List<Book> books = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 }

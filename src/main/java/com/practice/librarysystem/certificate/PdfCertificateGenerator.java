@@ -6,6 +6,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import com.practice.librarysystem.reservation.Reservation;
+import com.practice.librarysystem.util.DateTimeFormatConstants;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -54,8 +55,8 @@ public class PdfCertificateGenerator {
                 "This certificate proves that the user %s was approved and entrusted with the storage and exploitation of the book \"%s\" in period of %s - %s, subject to the timely return of the said book.",
                 reservation.getReserver().getLogin(),
                 reservation.getBook().getTitle(),
-                reservation.getStartDate(),
-                reservation.getDueDate()
+                DateTimeFormatConstants.formatToString(reservation.getStartDate()),
+                DateTimeFormatConstants.formatToString(reservation.getDueDate())
         );
 
         Paragraph certParagraph = new Paragraph(certText, fieldFont);

@@ -47,7 +47,7 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found."));
     }
 
-    public User update(Long id, UserNewDto newUser) {
+    public User update(Long id, UserUpdateDto newUser) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found."));
 
         if (userRepository.findByEmail(newUser.getEmail()).isPresent() && !newUser.getEmail().equals(user.getEmail())) {

@@ -9,6 +9,55 @@ window.addEventListener("DOMContentLoaded", () => {
     if (userRole === "ADMIN") {
         loadAllReservations();
     }
+
+    const editBtn = document.getElementById("editBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+
+    const viewMode = document.getElementById("viewMode");
+    const editMode = document.getElementById("editMode");
+
+    if (editBtn && saveBtn && cancelBtn && viewMode && editMode) {
+        editBtn.addEventListener("click", () => {
+            viewMode.style.display = "none";
+            editMode.style.display = "block";
+        });
+
+        cancelBtn.addEventListener("click", () => {
+            editMode.style.display = "none";
+            viewMode.style.display = "block";
+        });
+
+        saveBtn.addEventListener("click", () => {
+            const login = document.getElementById("loginInput").value;
+            const email = document.getElementById("emailInput").value;
+            const password = document.getElementById("passwordInput").value;
+            const role = document.getElementById("editorCheckbox").checked ? "EDITOR" : "USER";
+
+            fetch(`/users/${userId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ login, email, password, role })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to save changes.");
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById("loginDisplay").innerText = data.login;
+                    document.getElementById("emailDisplay").innerText = data.email;
+                    document.getElementById("roleDisplay").innerText = data.role;
+
+                    editMode.style.display = "none";
+                    viewMode.style.display = "block";
+                })
+                .catch(err => {
+                    alert("Error saving profile: " + err.message);
+                });
+        });
+    }
 });
 
 function formatDate(isoDate) {

@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable Long id, @RequestBody @Valid UserNewDto newUser,
+    public UserDto update(@PathVariable Long id, @RequestBody @Valid UserUpdateDto newUser,
                           HttpServletRequest httpServletRequest) {
         String ip = RequestConstants.getClientIp(httpServletRequest);
         log.info("Endpoint PATCH: /users/{id} was accessed by IP:{}", ip);
